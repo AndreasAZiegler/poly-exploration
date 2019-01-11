@@ -1,0 +1,27 @@
+jobs:
+  build:
+    docker:
+      - image: "ubuntu:bionic"
+    steps:
+      - checkout
+      - run:
+          name: Installing SUDO
+          command: 'apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*'
+      - run:
+          name: Installing GCC
+          command: 'apt-get update && apt-get install -y gcc g++'
+      - run:
+          name: Install CMAKE
+          command: 'apt-get update && sudo apt-get install -y cmake'
+      - run:
+          name: Creating build directory
+          command: 'mkdir build'
+      - run:
+          name: CMake
+          command: 'cd build && cmake ..'
+      - run:
+          name: Build
+          command: 'cd build && make'
+      - run:
+          name: Test
+          command: 'cd build && make test'
