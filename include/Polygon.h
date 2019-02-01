@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <string>
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point_xy.hpp>
 #include <boost/geometry/geometries/polygon.hpp>
@@ -11,9 +12,9 @@
 
 class Polygon {
  public:
-  Polygon(std::vector<Point> points);
+  explicit Polygon(const std::vector<Point>& points);
 
-  Polygon(const Polygon &other);
+  explicit Polygon(const Polygon& other);
 
   ~Polygon();
 
@@ -21,7 +22,15 @@ class Polygon {
 
   Polygon buildUnion(const Polygon& polygon) const;
 
-  std::vector<Point> &getPoints(void);
+  int getNumberOfIntersections(const Polygon& polygon);
+
+  void printIntersections(const Polygon& polygon);
+
+  std::vector<Point>& getPoints(void);
+
+  void print(void);
+
+  void plot(std::string filename);
 
  private:
   using BoostPoint = boost::geometry::model::d2::point_xy<double>;
