@@ -58,16 +58,23 @@ Polygon Polygon::buildUnion(const Polygon& polygon) const {
   return getPolygonFromBoostPolygon(output_polygon);
 }
 
-int Polygon::getNumberOfIntersections(const Polygon& polygon) {
+std::vector<Point> Polygon::getIntersectionPoints(const Polygon& polygon) {
   std::vector<BoostPolygon> intersection_output;
-  int number_of_intersections = 0;
 
-  if (boost::geometry::intersection(polygon_, polygon.polygon_,
-                                    intersection_output)) {
-    number_of_intersections = (intersection_output[0].outer().size() - 1);
+  boost::geometry::intersection(polygon_, polygon.polygon_, intersection_output);
+
+  std::vector<Point> intersection_points;
+
+  for (const auto& point : intersection_output[0].outer()) {
+    intersection_points.emplace_back(point.x(), point.y());
   }
 
-  return number_of_intersections;
+  return intersection_points;
+}
+
+int Polygon::getNumberOfIntersections(const Polygon& polygon) {
+  auto intersection_points = getIntersectionPoints(polygon);
+  return (intersection_points.size() - 1);
 }
 
 void Polygon::printIntersections(const Polygon& polygon) {

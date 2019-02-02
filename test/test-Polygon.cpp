@@ -32,6 +32,50 @@ TEST_F(PolygonTest, CreatePolygonWithPoints) {
   }
 }
 
+TEST_F(PolygonTest, CreatePolygonWithCopyConstructor) {
+  std::vector<Point> points;
+  points.emplace_back(Point(0.0, 0.0));
+  points.emplace_back(Point(10.0, 10.0));
+  points.emplace_back(Point(10.0, 0));
+  points.emplace_back(Point(0.0, 0.0));
+
+  Polygon polygon_1(points);
+
+  Polygon polygon_2(polygon_1);
+
+  auto return_points = polygon_2.getPoints();
+
+  ASSERT_EQ(points.size(), return_points.size())
+      << "Vectors points and return_points are of unequal length";
+
+  for (unsigned int i = 0; i < return_points.size(); ++i) {
+    EXPECT_EQ(points[i], return_points[i])
+        << "Vectors points and return_points differ at index " << i;
+  }
+}
+
+TEST_F(PolygonTest, CreatePolygonWithCopy) {
+  std::vector<Point> points;
+  points.emplace_back(Point(0.0, 0.0));
+  points.emplace_back(Point(10.0, 10.0));
+  points.emplace_back(Point(10.0, 0));
+  points.emplace_back(Point(0.0, 0.0));
+
+  Polygon polygon_1(points);
+
+  Polygon polygon_2 = polygon_1;
+
+  auto return_points = polygon_2.getPoints();
+
+  ASSERT_EQ(points.size(), return_points.size())
+      << "Vectors points and return_points are of unequal length";
+
+  for (unsigned int i = 0; i < return_points.size(); ++i) {
+    EXPECT_EQ(points[i], return_points[i])
+        << "Vectors points and return_points differ at index " << i;
+  }
+}
+
 TEST_F(PolygonTest, CreatePolygonUnion1) {
   std::vector<Point> first_polygon_points;
   first_polygon_points.emplace_back(Point(0.0, 0.0));
@@ -41,9 +85,6 @@ TEST_F(PolygonTest, CreatePolygonUnion1) {
   first_polygon_points.emplace_back(Point(0.0, 0.0));
 
   Polygon first_polygon(first_polygon_points);
-  /*
-  first_polygon.print();
-  */
   first_polygon.plot("first_polygon.svg");
 
   std::vector<Point> second_polygon_points;
@@ -54,10 +95,6 @@ TEST_F(PolygonTest, CreatePolygonUnion1) {
   second_polygon_points.emplace_back(Point(5.0, 5.0));
 
   Polygon second_polygon(second_polygon_points);
-  /*
-  second_polygon.print();
-  */
-  second_polygon.plot("second_polygon.svg");
 
   auto return_first_polygon_points = first_polygon.getPoints();
 
@@ -80,20 +117,60 @@ TEST_F(PolygonTest, CreatePolygonUnion1) {
   }
 
   auto union_polygon = first_polygon.buildUnion(second_polygon);
-  /*
-  union_polygon.print();
-  */
-  union_polygon.plot("union.svg");
-  /*
-  std::cout << "Number of intersections: "
-            << first_polygon.getNumberOfIntersections(second_polygon)
-            << std::endl;
-  */
 
   ASSERT_LE(
       ((first_polygon_points.size() - 1) + (second_polygon_points.size() - 1)),
       (union_polygon.getPoints().size() - 1))
       << "Vectors points and return_points are of unequal length";
+}
+
+TEST_F(PolygonTest, GetNumberOfIntersectionsOverlappingPolygons) {
+  std::vector<Point> first_polygon_points;
+  first_polygon_points.emplace_back(Point(0.0, 0.0));
+  first_polygon_points.emplace_back(Point(0.0, 10.0));
+  first_polygon_points.emplace_back(Point(10.0, 10.0));
+  first_polygon_points.emplace_back(Point(10.0, 0));
+  first_polygon_points.emplace_back(Point(0.0, 0.0));
+
+  Polygon first_polygon(first_polygon_points);
+  first_polygon.plot("first_polygon.svg");
+
+  std::vector<Point> second_polygon_points;
+  second_polygon_points.emplace_back(Point(5.0, 5.0));
+  second_polygon_points.emplace_back(Point(5.0, 15.0));
+  second_polygon_points.emplace_back(Point(15.0, 15.0));
+  second_polygon_points.emplace_back(Point(15.0, 5.0));
+  second_polygon_points.emplace_back(Point(5.0, 5.0));
+
+  Polygon second_polygon(second_polygon_points);
+
+  auto number_of_intersections = first_polygon.getNumberOfIntersections(second_polygon);
+
+  ASSERT_EQ(number_of_intersections, 4) << "Wrong number of intersections";
+}
+
+TEST_F(PolygonTest, GetNumberOfIntersectionsNonOverlappingPolygons) {
+  std::vector<Point> first_polygon_points;
+  first_polygon_points.emplace_back(Point(0.0, 0.0));
+  first_polygon_points.emplace_back(Point(0.0, 10.0));
+  first_polygon_points.emplace_back(Point(10.0, 10.0));
+  first_polygon_points.emplace_back(Point(10.0, 0));
+  first_polygon_points.emplace_back(Point(0.0, 0.0));
+
+  Polygon first_polygon(first_polygon_points);
+
+  std::vector<Point> second_polygon_points;
+  second_polygon_points.emplace_back(Point(15.0, 15.0));
+  second_polygon_points.emplace_back(Point(5.0, 25.0));
+  second_polygon_points.emplace_back(Point(25.0, 25.0));
+  second_polygon_points.emplace_back(Point(25.0, 5.0));
+  second_polygon_points.emplace_back(Point(15.0, 15.0));
+
+  Polygon second_polygon(second_polygon_points);
+
+  auto number_of_intersections = first_polygon.getNumberOfIntersections(second_polygon);
+
+  ASSERT_EQ(number_of_intersections, 0) << "Wrong number of intersections";
 }
 
 TEST_F(PolygonTest, CreatePolygonUnion2) {

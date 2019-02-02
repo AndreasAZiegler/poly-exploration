@@ -24,6 +24,8 @@ class Polygon {
 
   Polygon buildUnion(const Polygon& polygon) const;
 
+  std::vector<Point> getIntersectionPoints(const Polygon& polygon);
+
   int getNumberOfIntersections(const Polygon& polygon);
 
   void printIntersections(const Polygon& polygon);
