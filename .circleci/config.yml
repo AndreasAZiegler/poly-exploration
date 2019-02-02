@@ -10,6 +10,9 @@ jobs:
           name: Installing SUDO
           command: 'apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*'
       - run:
+          name: Install cpp-coveralls
+          command: 'apt-get update && apt-get install -y pip && pip install --user cpp-coveralls'
+      - run:
           name: Installing curl
           command: 'apt-get update && apt-get install -y curl'
       - run:
@@ -29,7 +32,7 @@ jobs:
           command: 'mkdir build'
       - run:
           name: CMake
-          command: 'cd build && cmake ..'
+          command: 'cd build && cmake .. -DCMAKE_BUILD_TYPE=Debug'
       - run:
           name: Build
           command: 'cd build && make'
@@ -37,3 +40,11 @@ jobs:
           name: Test
           command: 'cd build && make test'
       - run: curl -s https://codecov.io/bash | bash
+      - run:
+          name: Coveralls
+          command: 'coveralls --exclude lib --exclude tests --gcov-options '\-lp''
+
+script:
+  - ./configure --enable-gcov && make && make check
+after_success:
+  - coveralls --exclude lib --exclude tests --gcov-options '\-lp'
