@@ -43,4 +43,4 @@ jobs:
           name: Test
           command: 'cd build && make test'
       - run: curl -s https://codecov.io/bash | bash
-      - run: coveralls --exclude lib --exclude tests --gcov-options '\-lp'
+      - run: coveralls --root --exclude lib --exclude tests --gcov-options '\-lp'
