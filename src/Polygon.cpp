@@ -27,20 +27,6 @@ Polygon::Polygon(const std::vector<Point>& points) {
   boost::geometry::correct(polygon_);
 } /* -----  end of method Polygon::Polygon  (constructor)  ----- */
 
-Polygon::Polygon(const Polygon& other) {
-  points_ = other.points_;
-  polygon_ = other.polygon_;
-} /* -----  end of method Polygon::Polygon  (copy constructor)  ----- */
-
-Polygon& Polygon::operator=(const Polygon& other) {
-  if (this != &other) {
-    points_ = other.points_;
-    polygon_ = other.polygon_;
-  }
-
-  return *this;
-} /* -----  end of method Polygon::operator =  (assignment operator)  ----- */
-
 Polygon Polygon::buildUnion(const Polygon& polygon) const {
   // Boost output polygon
   std::vector<BoostPolygon> output_polygons;
@@ -54,7 +40,6 @@ Polygon Polygon::buildUnion(const Polygon& polygon) const {
 
   // Reference to the output polygon
   const auto& output_polygon = output_polygons[0];
-
   return getPolygonFromBoostPolygon(output_polygon);
 }
 
@@ -77,8 +62,8 @@ std::vector<Point> Polygon::getIntersectionPoints(const Polygon& polygon) {
   // Reference to the points of the intersection polygon
   const auto& polygon_points = intersection_polygons[0].outer();
 
-  for (std::vector<BoostPoint>::size_type i = 0;
-       i < polygon_points.size(); ++i) {
+  for (std::vector<BoostPoint>::size_type i = 0; i < polygon_points.size();
+       ++i) {
     intersection_points.emplace_back(
         Point(boost::geometry::get<0>(polygon_points[i]),
               boost::geometry::get<1>(polygon_points[i])));
@@ -98,13 +83,12 @@ int Polygon::getNumberOfIntersections(const Polygon& polygon) {
 }
 
 void Polygon::printIntersections(const Polygon& polygon) {
-  std::vector<BoostPolygon> intersection_output;
-  if (boost::geometry::intersection(polygon_, polygon.polygon_,
-                                    intersection_output)) {
+  auto intersection_points = getIntersectionPoints(polygon);
+  if (!intersection_points.empty()) {
     std::cout << "Intersections: " << std::endl;
 
-    for (const auto& point : intersection_output[0].outer()) {
-      std::cout << "x: " << point.x() << " y: " << point.y() << std::endl;
+    for (const auto& point : intersection_points) {
+      std::cout << "x: " << point.getX() << " y: " << point.getY() << std::endl;
     }
   }
 }

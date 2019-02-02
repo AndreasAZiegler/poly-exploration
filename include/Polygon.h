@@ -16,11 +16,7 @@ class Polygon {
  public:
   explicit Polygon(const std::vector<Point>& points);
 
-  Polygon(const Polygon& other);
-
   ~Polygon() = default;
-
-  Polygon &operator=(const Polygon &other);
 
   Polygon buildUnion(const Polygon& polygon) const;
 
