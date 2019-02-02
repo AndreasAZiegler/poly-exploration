@@ -10,6 +10,9 @@ jobs:
           name: Installing SUDO
           command: 'apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*'
       - run:
+          name: Install coveralls
+          command: 'apt-get update && apt-get install -y python3-pip python3-yaml git && pip3 install cpp-coveralls'
+      - run:
           name: Installing curl
           command: 'apt-get update && apt-get install -y curl'
       - run:
@@ -40,8 +43,4 @@ jobs:
           name: Test
           command: 'cd build && make test'
       - run: curl -s https://codecov.io/bash | bash
-      - run:
-          name: Install coveralls
-          command: 'apt-get update && apt-get install -y python3-pip locate python3-yaml git && pip3 install cpp-coveralls'
-      - run: updatedb &&  locate coveralls
       - run: /usr/local/bin/coveralls --exclude lib --exclude tests --exclude /usr/include/c++ --exclude /usr/include/boost --gcov-options '\-lp'
