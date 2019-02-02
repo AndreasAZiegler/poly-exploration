@@ -10,9 +10,6 @@ jobs:
           name: Installing SUDO
           command: 'apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*'
       - run:
-          name: Install cpp-coveralls
-          command: 'apt-get update && apt-get install -y python-pip && pip install --user cpp-coveralls'
-      - run:
           name: Installing curl
           command: 'apt-get update && apt-get install -y curl'
       - run:
@@ -46,4 +43,5 @@ jobs:
       - run:
           name: Coveralls
           command: |
-            sudo coveralls --root --exclude lib --exclude tests --gcov-options '\-lp'
+            apt-get update && apt-get install -y python-pip && pip install --user cpp-coveralls
+            coveralls --exclude lib --exclude tests --gcov-options '\-lp'
