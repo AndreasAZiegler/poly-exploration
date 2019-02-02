@@ -1,1 +1,1 @@
-add_executable(poly-exploration main.cpp Polygon.cpp)
+add_executable(poly-exploration main.cpp Polygon.cpp Point.cpp)
