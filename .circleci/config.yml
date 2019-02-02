@@ -41,7 +41,7 @@ jobs:
           command: 'cd build && make test'
       - run: curl -s https://codecov.io/bash | bash
       - run:
-          name: Coveralls
+          name: Install coveralls
           command: |
             apt-get update && apt-get install -y python-pip && pip install --user cpp-coveralls
-            /root/.local/bin/coveralls --exclude lib --exclude tests --gcov-options '\-lp'
+      - run: /root/.local/bin/coveralls --exclude lib --exclude tests --gcov-options '\-lp'
