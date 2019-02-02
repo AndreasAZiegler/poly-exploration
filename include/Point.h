@@ -5,30 +5,23 @@
 
 #include <cmath>
 
-struct Point {
-  Point(double x, double y) {
-    x_ = x;
-    y_ = y;
-  }
+class Point {
+ public:
+  Point(double x, double y);
 
-  inline bool operator==(const Point& point) {
-    return (fabs(this->x_ - point.x_) < 1e-4) &&
-           (fabs(this->y_ - point.y_) < 1e-4);
-  }
+  bool operator==(const Point& point);
 
-  inline friend bool operator==(const Point& lhs, const Point& rhs) {
-    return (fabs(lhs.x_ - rhs.x_) < 1e-4) && (fabs(lhs.y_ - rhs.y_) < 1e-4);
-  }
+  friend bool operator==(const Point& lhs, const Point& rhs);
 
-  inline bool operator!=(const Point& point) {
-    return (fabs(this->x_ - point.x_) > 1e-4) ||
-           (fabs(this->y_ - point.y_) > 1e-4);
-  }
+  bool operator!=(const Point& point);
 
-  inline friend bool operator!=(const Point& lhs, const Point& rhs) {
-    return (fabs(lhs.x_ - rhs.x_) > 1e-4) || (fabs(lhs.y_ - rhs.y_) > 1e-4);
-  }
+  friend bool operator!=(const Point& lhs, const Point& rhs);
 
+  double getX() const { return x_; };
+
+  double getY() const { return y_; };
+
+ private:
   double x_;
   double y_;
 };

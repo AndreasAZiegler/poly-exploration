@@ -3,10 +3,12 @@
 
 #pragma once
 
-#include <string>
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point_xy.hpp>
 #include <boost/geometry/geometries/polygon.hpp>
+
+#include <vector>
+#include <string>
 
 #include "Point.h"
 
@@ -14,9 +16,9 @@ class Polygon {
  public:
   explicit Polygon(const std::vector<Point>& points);
 
-  explicit Polygon(const Polygon& other);
+  Polygon(const Polygon& other);
 
-  ~Polygon();
+  ~Polygon() = default;
 
   Polygon &operator=(const Polygon &other);
 
@@ -26,19 +28,18 @@ class Polygon {
 
   void printIntersections(const Polygon& polygon);
 
-  std::vector<Point>& getPoints(void);
+  std::vector<Point>& getPoints();
 
-  void print(void);
+  void print();
 
-  void plot(std::string filename);
+  void plot(const std::string& filename);
 
  private:
   using BoostPoint = boost::geometry::model::d2::point_xy<double>;
   using BoostPolygon = boost::geometry::model::polygon<BoostPoint>;
 
-  Polygon getPolygonFromBoostPolygon(const BoostPolygon polygon) const;
+  Polygon getPolygonFromBoostPolygon(const BoostPolygon& polygon) const;
 
   std::vector<Point> points_;
   BoostPolygon polygon_;
-
 }; /* -----  end of class Polygon  ----- */

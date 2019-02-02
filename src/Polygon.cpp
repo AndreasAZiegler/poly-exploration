@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <string>
+#include <vector>
 
 #include "Point.h"
 #include "Polygon.h"
@@ -18,7 +20,7 @@ Polygon::Polygon(const std::vector<Point>& points) {
   for (const auto& point : points) {
     points_.emplace_back(point);
 
-    auto boost_point = BoostPoint(point.x_, point.y_);
+    auto boost_point = BoostPoint(point.getX(), point.getY());
     boost::geometry::append(polygon_.outer(), boost_point);
   }
 
@@ -26,13 +28,14 @@ Polygon::Polygon(const std::vector<Point>& points) {
 } /* -----  end of method Polygon::Polygon  (constructor)  ----- */
 
 Polygon::Polygon(const Polygon& other) {
+  points_ = other.points_;
+  polygon_ = other.polygon_;
 } /* -----  end of method Polygon::Polygon  (copy constructor)  ----- */
-
-Polygon::~Polygon() {
-} /* -----  end of method Polygon::~Polygon  (destructor)  ----- */
 
 Polygon& Polygon::operator=(const Polygon& other) {
   if (this != &other) {
+    points_ = other.points_;
+    polygon_ = other.polygon_;
   }
 
   return *this;
@@ -52,24 +55,25 @@ Polygon Polygon::buildUnion(const Polygon& polygon) const {
   // Reference to the output polygon
   const auto& output_polygon = output_polygons[0];
 
-  //std::cout << "Union contains " << output_polygon.outer().size() << " points."
-  //          << std::endl;
-
   return getPolygonFromBoostPolygon(output_polygon);
 }
 
 int Polygon::getNumberOfIntersections(const Polygon& polygon) {
   std::vector<BoostPolygon> intersection_output;
-  if (boost::geometry::intersection(polygon_, polygon.polygon_, intersection_output)) {
-    return (intersection_output[0].outer().size() - 1);
-  } else {
-    return 0;
+  int number_of_intersections = 0;
+
+  if (boost::geometry::intersection(polygon_, polygon.polygon_,
+                                    intersection_output)) {
+    number_of_intersections = (intersection_output[0].outer().size() - 1);
   }
+
+  return number_of_intersections;
 }
 
 void Polygon::printIntersections(const Polygon& polygon) {
   std::vector<BoostPolygon> intersection_output;
-  if (boost::geometry::intersection(polygon_, polygon.polygon_, intersection_output)) {
+  if (boost::geometry::intersection(polygon_, polygon.polygon_,
+                                    intersection_output)) {
     std::cout << "Intersections: " << std::endl;
 
     for (const auto& point : intersection_output[0].outer()) {
@@ -78,15 +82,12 @@ void Polygon::printIntersections(const Polygon& polygon) {
   }
 }
 
-Polygon Polygon::getPolygonFromBoostPolygon(const BoostPolygon polygon) const {
+Polygon Polygon::getPolygonFromBoostPolygon(const BoostPolygon& polygon) const {
   // Reference to the points of the input polygon
   const auto& polygon_points = polygon.outer();
 
   // Points to create a new Polygon
   std::vector<Point> points;
-
-  //std::cout << "polygon contains " << polygon_points.size() << " points"
-  //          << std::endl;
 
   for (std::vector<BoostPoint>::size_type i = 0; i < polygon_points.size();
        ++i) {
@@ -97,17 +98,17 @@ Polygon Polygon::getPolygonFromBoostPolygon(const BoostPolygon polygon) const {
   return Polygon(points);
 }
 
-std::vector<Point>& Polygon::getPoints(void) { return points_; }
+std::vector<Point>& Polygon::getPoints() { return points_; }
 
-void Polygon::print(void) {
+void Polygon::print() {
   std::cout << "Polygon: " << std::endl;
 
   for (const auto& point : points_) {
-    std::cout << "x: " << point.x_ << ", y: " << point.y_ << std::endl;
+    std::cout << "x: " << point.getX() << ", y: " << point.getY() << std::endl;
   }
 }
 
-void Polygon::plot(std::string filename) {
+void Polygon::plot(const std::string& filename) {
   // Declare a stream and an SVG mapper
   std::ofstream svg(filename);
   boost::geometry::svg_mapper<BoostPoint> mapper(svg, 800, 500);
