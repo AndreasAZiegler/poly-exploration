@@ -42,8 +42,6 @@ jobs:
       - run: curl -s https://codecov.io/bash | bash
       - run:
           name: Install coveralls
-          command: |
-            apt-get update && apt-get install -y python-pip locate && pip install cpp-coveralls
-            updatedb
-            locate coveralls
-            /usr/local/bin/coveralls --exclude lib --exclude tests --gcov-options '\-lp'
+          command: 'apt-get update && apt-get install -y python-pip locate && pip install cpp-coveralls'
+      - run: updatedb &&  locate coveralls
+      - run: /usr/local/bin/coveralls --exclude lib --exclude tests --gcov-options '\-lp'
