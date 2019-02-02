@@ -59,14 +59,29 @@ Polygon Polygon::buildUnion(const Polygon& polygon) const {
 }
 
 std::vector<Point> Polygon::getIntersectionPoints(const Polygon& polygon) {
-  std::vector<BoostPolygon> intersection_output;
+  std::vector<BoostPolygon> intersection_polygons;
 
-  boost::geometry::intersection(polygon_, polygon.polygon_, intersection_output);
+  boost::geometry::intersection(polygon_, polygon.polygon_,
+                                intersection_polygons);
+
+  if (1 < intersection_polygons.size()) {
+    throw std::runtime_error("Intersection results in more than one polygon.");
+  }
 
   std::vector<Point> intersection_points;
 
-  for (const auto& point : intersection_output[0].outer()) {
-    intersection_points.emplace_back(point.x(), point.y());
+  if (intersection_polygons.empty()) {
+    return intersection_points;
+  }
+
+  // Reference to the points of the intersection polygon
+  const auto& polygon_points = intersection_polygons[0].outer();
+
+  for (std::vector<BoostPoint>::size_type i = 0;
+       i < polygon_points.size(); ++i) {
+    intersection_points.emplace_back(
+        Point(boost::geometry::get<0>(polygon_points[i]),
+              boost::geometry::get<1>(polygon_points[i])));
   }
 
   return intersection_points;
@@ -74,6 +89,11 @@ std::vector<Point> Polygon::getIntersectionPoints(const Polygon& polygon) {
 
 int Polygon::getNumberOfIntersections(const Polygon& polygon) {
   auto intersection_points = getIntersectionPoints(polygon);
+
+  if (intersection_points.empty()) {
+    return 0;
+  }
+
   return (intersection_points.size() - 1);
 }
 
