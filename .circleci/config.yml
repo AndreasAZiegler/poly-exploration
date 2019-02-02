@@ -43,5 +43,5 @@ jobs:
       - run:
           name: Install coveralls
           command: |
-            apt-get update && apt-get install -y python-pip && pip install cpp-coveralls
+            apt-get update && apt-get install -y python-pip pyyaml && pip install cpp-coveralls
             coveralls --exclude lib --exclude tests --gcov-options '\-lp'
