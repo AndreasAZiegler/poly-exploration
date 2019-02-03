@@ -1,3 +1,6 @@
 [submodule "libs/minkindr"]
 	path = libs/minkindr
 	url = git@github.com:ethz-asl/minkindr.git
+[submodule "libs/kindr"]
+	path = libs/kindr
+	url = git@github.com:ANYbotics/kindr.git
