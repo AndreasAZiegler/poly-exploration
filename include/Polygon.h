@@ -7,14 +7,15 @@
 #include <boost/geometry/geometries/point_xy.hpp>
 #include <boost/geometry/geometries/polygon.hpp>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "Point.h"
 
 class Polygon {
  public:
-  explicit Polygon(const std::vector<Point>& points);
+  explicit Polygon(const std::vector<Point>& points,
+                   const std::vector<bool>& maximum_ranges);
 
   ~Polygon() = default;
 
@@ -28,16 +29,27 @@ class Polygon {
 
   std::vector<Point>& getPoints();
 
+  bool isPolygonFromSensorMeasurements() {
+    return polygonFromSensorMeasurements;
+  }
+
   void print();
 
   void plot(const std::string& filename);
 
  private:
+  explicit Polygon(const std::vector<Point>& points);
+
   using BoostPoint = boost::geometry::model::d2::point_xy<double>;
   using BoostPolygon = boost::geometry::model::polygon<BoostPoint>;
 
   Polygon getPolygonFromBoostPolygon(const BoostPolygon& polygon) const;
 
+  bool polygonFromSensorMeasurements;
+
   std::vector<Point> points_;
   BoostPolygon polygon_;
+
+  /// Indicates if sensor measurement is recorded at the maximum sensor range
+  std::vector<bool> maximum_ranges_;
 }; /* -----  end of class Polygon  ----- */
