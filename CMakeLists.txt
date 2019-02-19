@@ -12,6 +12,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(GTest)
 
+find_package(kindr) 
+include_directories(${kindr_INCLUDE_DIRS}) 
+
 include(CodeCoverage)
 set(COVERAGE_LCOV_EXCLUDES '/usr/include/*')
 

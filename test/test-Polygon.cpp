@@ -13,11 +13,11 @@ class PolygonTest : public ::testing::Test {
 
 // Tests that Polygons are constructed correctly
 TEST_F(PolygonTest, CreatePolygonWithPoints) {
-  std::vector<Point> points;
-  points.emplace_back(0.0, 0.0);
-  points.emplace_back(10.0, 10.0);
-  points.emplace_back(10.0, 0);
-  points.emplace_back(0.0, 0.0);
+  std::vector<PolygonPoint> points;
+  points.emplace_back(0.0, 0.0, false);
+  points.emplace_back(10.0, 10.0, false);
+  points.emplace_back(10.0, 0, false);
+  points.emplace_back(0.0, 0.0, false);
 
   std::vector<bool> maximum_ranges{false, false, false, false};
 
@@ -37,11 +37,11 @@ TEST_F(PolygonTest, CreatePolygonWithPoints) {
 }
 
 TEST_F(PolygonTest, CreatePolygonWithCopyConstructor) {
-  std::vector<Point> points;
-  points.emplace_back(0.0, 0.0);
-  points.emplace_back(10.0, 10.0);
-  points.emplace_back(10.0, 0);
-  points.emplace_back(0.0, 0.0);
+  std::vector<PolygonPoint> points;
+  points.emplace_back(0.0, 0.0, false);
+  points.emplace_back(10.0, 10.0, false);
+  points.emplace_back(10.0, 0, false);
+  points.emplace_back(0.0, 0.0, false);
 
   std::vector<bool> maximum_ranges{false, false, false, false};
 
@@ -65,11 +65,11 @@ TEST_F(PolygonTest, CreatePolygonWithCopyConstructor) {
 }
 
 TEST_F(PolygonTest, CreatePolygonWithCopy) {
-  std::vector<Point> points;
-  points.emplace_back(0.0, 0.0);
-  points.emplace_back(10.0, 10.0);
-  points.emplace_back(10.0, 0);
-  points.emplace_back(0.0, 0.0);
+  std::vector<PolygonPoint> points;
+  points.emplace_back(0.0, 0.0, false);
+  points.emplace_back(10.0, 10.0, false);
+  points.emplace_back(10.0, 0, false);
+  points.emplace_back(0.0, 0.0, false);
 
   std::vector<bool> maximum_ranges{false, false, false, false};
 
@@ -93,23 +93,23 @@ TEST_F(PolygonTest, CreatePolygonWithCopy) {
 }
 
 TEST_F(PolygonTest, CreatePolygonUnion1) {
-  std::vector<Point> first_polygon_points;
-  first_polygon_points.emplace_back(0.0, 0.0);
-  first_polygon_points.emplace_back(0.0, 10.0);
-  first_polygon_points.emplace_back(10.0, 10.0);
-  first_polygon_points.emplace_back(10.0, 0);
-  first_polygon_points.emplace_back(0.0, 0.0);
+  std::vector<PolygonPoint> first_polygon_points;
+  first_polygon_points.emplace_back(0.0, 0.0, false);
+  first_polygon_points.emplace_back(0.0, 10.0, false);
+  first_polygon_points.emplace_back(10.0, 10.0, false);
+  first_polygon_points.emplace_back(10.0, 0, false);
+  first_polygon_points.emplace_back(0.0, 0.0, false);
 
   std::vector<bool> first_maximum_ranges{false, false, false, false, false};
 
   Polygon first_polygon(first_polygon_points, first_maximum_ranges);
 
-  std::vector<Point> second_polygon_points;
-  second_polygon_points.emplace_back(5.0, 5.0);
-  second_polygon_points.emplace_back(5.0, 15.0);
-  second_polygon_points.emplace_back(15.0, 15.0);
-  second_polygon_points.emplace_back(15.0, 5.0);
-  second_polygon_points.emplace_back(5.0, 5.0);
+  std::vector<PolygonPoint> second_polygon_points;
+  second_polygon_points.emplace_back(5.0, 5.0, false);
+  second_polygon_points.emplace_back(5.0, 15.0, false);
+  second_polygon_points.emplace_back(15.0, 15.0, false);
+  second_polygon_points.emplace_back(15.0, 5.0, false);
+  second_polygon_points.emplace_back(5.0, 5.0, false);
 
   std::vector<bool> second_maximum_ranges{false, false, false, false, false};
 
@@ -150,23 +150,23 @@ TEST_F(PolygonTest, CreatePolygonUnion1) {
 }
 
 TEST_F(PolygonTest, GetNumberOfIntersectionsOverlappingPolygons) {
-  std::vector<Point> first_polygon_points;
-  first_polygon_points.emplace_back(0.0, 0.0);
-  first_polygon_points.emplace_back(0.0, 10.0);
-  first_polygon_points.emplace_back(10.0, 10.0);
-  first_polygon_points.emplace_back(10.0, 0);
-  first_polygon_points.emplace_back(0.0, 0.0);
+  std::vector<PolygonPoint> first_polygon_points;
+  first_polygon_points.emplace_back(0.0, 0.0, false);
+  first_polygon_points.emplace_back(0.0, 10.0, false);
+  first_polygon_points.emplace_back(10.0, 10.0, false);
+  first_polygon_points.emplace_back(10.0, 0, false);
+  first_polygon_points.emplace_back(0.0, 0.0, false);
 
   std::vector<bool> first_maximum_ranges{false, false, false, false, false};
 
   Polygon first_polygon(first_polygon_points, first_maximum_ranges);
 
-  std::vector<Point> second_polygon_points;
-  second_polygon_points.emplace_back(5.0, 5.0);
-  second_polygon_points.emplace_back(5.0, 15.0);
-  second_polygon_points.emplace_back(15.0, 15.0);
-  second_polygon_points.emplace_back(15.0, 5.0);
-  second_polygon_points.emplace_back(5.0, 5.0);
+  std::vector<PolygonPoint> second_polygon_points;
+  second_polygon_points.emplace_back(5.0, 5.0, false);
+  second_polygon_points.emplace_back(5.0, 15.0, false);
+  second_polygon_points.emplace_back(15.0, 15.0, false);
+  second_polygon_points.emplace_back(15.0, 5.0, false);
+  second_polygon_points.emplace_back(5.0, 5.0, false);
 
   std::vector<bool> second_maximum_ranges{false, false, false, false, false};
 
@@ -183,23 +183,23 @@ TEST_F(PolygonTest, GetNumberOfIntersectionsOverlappingPolygons) {
 }
 
 TEST_F(PolygonTest, GetNumberOfIntersectionsNonOverlappingPolygons) {
-  std::vector<Point> first_polygon_points;
-  first_polygon_points.emplace_back(0.0, 0.0);
-  first_polygon_points.emplace_back(0.0, 10.0);
-  first_polygon_points.emplace_back(10.0, 10.0);
-  first_polygon_points.emplace_back(10.0, 0);
-  first_polygon_points.emplace_back(0.0, 0.0);
+  std::vector<PolygonPoint> first_polygon_points;
+  first_polygon_points.emplace_back(0.0, 0.0, false);
+  first_polygon_points.emplace_back(0.0, 10.0, false);
+  first_polygon_points.emplace_back(10.0, 10.0, false);
+  first_polygon_points.emplace_back(10.0, 0, false);
+  first_polygon_points.emplace_back(0.0, 0.0, false);
 
   std::vector<bool> first_maximum_ranges{false, false, false, false, false};
 
   Polygon first_polygon(first_polygon_points, first_maximum_ranges);
 
-  std::vector<Point> second_polygon_points;
-  second_polygon_points.emplace_back(15.0, 15.0);
-  second_polygon_points.emplace_back(5.0, 25.0);
-  second_polygon_points.emplace_back(25.0, 25.0);
-  second_polygon_points.emplace_back(25.0, 5.0);
-  second_polygon_points.emplace_back(15.0, 15.0);
+  std::vector<PolygonPoint> second_polygon_points;
+  second_polygon_points.emplace_back(15.0, 15.0, false);
+  second_polygon_points.emplace_back(5.0, 25.0, false);
+  second_polygon_points.emplace_back(25.0, 25.0, false);
+  second_polygon_points.emplace_back(25.0, 5.0, false);
+  second_polygon_points.emplace_back(15.0, 15.0, false);
 
   std::vector<bool> second_maximum_ranges{false, false, false, false, false};
 
@@ -216,19 +216,19 @@ TEST_F(PolygonTest, GetNumberOfIntersectionsNonOverlappingPolygons) {
 }
 
 TEST_F(PolygonTest, CreatePolygonUnion2) {
-  std::vector<Point> first_polygon_points;
-  first_polygon_points.emplace_back(2.0, 1.3);
-  first_polygon_points.emplace_back(2.4, 1.7);
-  first_polygon_points.emplace_back(2.8, 1.8);
-  first_polygon_points.emplace_back(3.4, 1.2);
-  first_polygon_points.emplace_back(3.7, 1.6);
-  first_polygon_points.emplace_back(3.4, 2.0);
-  first_polygon_points.emplace_back(4.1, 3.0);
-  first_polygon_points.emplace_back(5.3, 2.6);
-  first_polygon_points.emplace_back(5.4, 1.2);
-  first_polygon_points.emplace_back(4.9, 0.8);
-  first_polygon_points.emplace_back(2.9, 0.7);
-  first_polygon_points.emplace_back(2.0, 1.3);
+  std::vector<PolygonPoint> first_polygon_points;
+  first_polygon_points.emplace_back(2.0, 1.3, false);
+  first_polygon_points.emplace_back(2.4, 1.7, false);
+  first_polygon_points.emplace_back(2.8, 1.8, false);
+  first_polygon_points.emplace_back(3.4, 1.2, false);
+  first_polygon_points.emplace_back(3.7, 1.6, false);
+  first_polygon_points.emplace_back(3.4, 2.0, false);
+  first_polygon_points.emplace_back(4.1, 3.0, false);
+  first_polygon_points.emplace_back(5.3, 2.6, false);
+  first_polygon_points.emplace_back(5.4, 1.2, false);
+  first_polygon_points.emplace_back(4.9, 0.8, false);
+  first_polygon_points.emplace_back(2.9, 0.7, false);
+  first_polygon_points.emplace_back(2.0, 1.3, false);
 
   std::vector<bool> first_maximum_ranges{false, false, false, false,
                                          false, false, false, false,
@@ -236,16 +236,16 @@ TEST_F(PolygonTest, CreatePolygonUnion2) {
 
   Polygon first_polygon(first_polygon_points, first_maximum_ranges);
 
-  std::vector<Point> second_polygon_points;
-  second_polygon_points.emplace_back(4.0, -0.5);
-  second_polygon_points.emplace_back(3.5, 1.0);
-  second_polygon_points.emplace_back(2.0, 1.5);
-  second_polygon_points.emplace_back(3.5, 2.0);
-  second_polygon_points.emplace_back(4.0, 3.5);
-  second_polygon_points.emplace_back(4.5, 2.0);
-  second_polygon_points.emplace_back(6.0, 1.5);
-  second_polygon_points.emplace_back(4.5, 1.0);
-  second_polygon_points.emplace_back(4.0, -0.5);
+  std::vector<PolygonPoint> second_polygon_points;
+  second_polygon_points.emplace_back(4.0, -0.5, false);
+  second_polygon_points.emplace_back(3.5, 1.0, false);
+  second_polygon_points.emplace_back(2.0, 1.5, false);
+  second_polygon_points.emplace_back(3.5, 2.0, false);
+  second_polygon_points.emplace_back(4.0, 3.5, false);
+  second_polygon_points.emplace_back(4.5, 2.0, false);
+  second_polygon_points.emplace_back(6.0, 1.5, false);
+  second_polygon_points.emplace_back(4.5, 1.0, false);
+  second_polygon_points.emplace_back(4.0, -0.5, false);
 
   std::vector<bool> second_maximum_ranges{false, false, false, false, false,
                                           false, false, false, false};

@@ -11,10 +11,11 @@
 #include <vector>
 
 #include "Point.h"
+#include "PolygonPoint.h"
 
 class Polygon {
  public:
-  explicit Polygon(const std::vector<Point>& points,
+  explicit Polygon(const std::vector<PolygonPoint>& points,
                    const std::vector<bool>& maximum_ranges);
 
   ~Polygon() = default;

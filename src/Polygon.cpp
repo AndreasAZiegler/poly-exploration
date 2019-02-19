@@ -7,10 +7,9 @@
 #include <string>
 #include <vector>
 
-#include "Point.h"
 #include "Polygon.h"
 
-Polygon::Polygon(const std::vector<Point>& points,
+Polygon::Polygon(const std::vector<PolygonPoint>& points,
                  const std::vector<bool>& maximum_ranges)
     : polygonFromSensorMeasurements(true) {
   if (points[0] != points.back()) {
