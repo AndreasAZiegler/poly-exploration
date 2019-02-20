@@ -4,8 +4,8 @@
 #pragma once
 
 #include <vector>
-#include "Polygon.h"
 #include "Geometry.h"
+#include "Polygon.h"
 #include "PoseGraphPose.h"
 
 class PoseGraph {
@@ -13,6 +13,9 @@ class PoseGraph {
   PoseGraph();
 
   void addPose(Polygon& polygon, Pose transformation);
+
+  void connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
+                       Pose transformation);
 
   PoseGraphPose& getPoseGraphPose(void);
 

@@ -10,12 +10,7 @@ PoseGraphPose::PoseGraphPose(Polygon& polygon, unsigned int pose_graph_pose_id)
       polygon_(polygon) {
 } /* -----  end of method PoseGraphPose::PoseGraphPose  (constructor)  ----- */
 
-void PoseGraphPose::addAdjacentPose(
-    unsigned int pose_graph_pose_id, std::shared_ptr<PoseGraphPose> pose_graph_pose,
-    Pose& transformation) {
-  if (0 == adjacentPoses_.count(pose_graph_pose_id)) {
-    adjacentPoses_[pose_graph_pose_id] =
-        std::make_tuple<std::shared_ptr<PoseGraphPose>, Pose>(
-            std::move(pose_graph_pose), std::move(transformation));
-  }
+void PoseGraphPose::addAdjacentPose(unsigned int pose_graph_pose_id,
+                                    Pose& transformation) {
+  adjacentPoses_[pose_graph_pose_id] = std::move(transformation);
 }

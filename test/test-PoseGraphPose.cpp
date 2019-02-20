@@ -1,3 +1,5 @@
+#include <memory>
+#include <vector>
 #include "PoseGraphPose.h"
 #include "gtest/gtest.h"
 
@@ -114,14 +116,13 @@ TEST_F(PoseGraphPoseTest, CreateTwoPoseGraphPose) {
 
   Pose transformation(Position(0.5, 0.5, 0), Rotation());
 
-  pose_graph_pose_1.addAdjacentPose(
-      1, std::make_shared<PoseGraphPose>(pose_graph_pose_2), transformation);
+  pose_graph_pose_1.addAdjacentPose(1, transformation);
 
   adjacent_poses_1 = pose_graph_pose_1.getAdjacentPoses();
   ASSERT_EQ(adjacent_poses_1.size(), 1) << "There should be one adjacent pose";
 
   unsigned int id_pose_graph_pose_2 = 1;
-  Pose return_transformation_1 = std::get<1>(adjacent_poses_1[id_pose_graph_pose_2]);
+  Pose return_transformation_1 = adjacent_poses_1[id_pose_graph_pose_2];
   ASSERT_EQ(return_transformation_1, transformation)
       << "There should be one adjacent pose";
 
@@ -129,15 +130,13 @@ TEST_F(PoseGraphPoseTest, CreateTwoPoseGraphPose) {
   Pose inverted_transformation(
       -inverse_rotation.rotate(transformation.getPosition()), inverse_rotation);
 
-  pose_graph_pose_2.addAdjacentPose(
-      0, std::make_shared<PoseGraphPose>(pose_graph_pose_1),
-      inverted_transformation);
+  pose_graph_pose_2.addAdjacentPose(0, inverted_transformation);
 
   adjacent_poses_2 = pose_graph_pose_2.getAdjacentPoses();
   ASSERT_EQ(adjacent_poses_2.size(), 1) << "There should be one adjacent pose";
 
   unsigned int id_pose_graph_pose_1 = 0;
-  Pose return_transformation_2 = std::get<1>(adjacent_poses_2[id_pose_graph_pose_1]);
+  Pose return_transformation_2 = adjacent_poses_2[id_pose_graph_pose_1];
   ASSERT_EQ(return_transformation_2, inverted_transformation)
       << "There should be one adjacent pose";
 }

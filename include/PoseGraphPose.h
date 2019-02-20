@@ -12,19 +12,13 @@
 
 class PoseGraphPose {
  public:
-  PoseGraphPose(
-      Polygon& polygon, unsigned int pose_graph_pose_id);
+  PoseGraphPose(Polygon& polygon, unsigned int pose_graph_pose_id);
 
-  void addAdjacentPose(unsigned int pose_graph_pose_id,
-                       std::shared_ptr<PoseGraphPose> pose_graph_pose,
-                       Pose& transformation);
+  void addAdjacentPose(unsigned int pose_graph_pose_id, Pose& transformation);
 
   Polygon& getPolygon() { return polygon_; }
 
-  std::map<unsigned int, std::tuple<std::shared_ptr<PoseGraphPose>, Pose>>
-  getAdjacentPoses() {
-    return adjacentPoses_;
-  }
+  std::map<unsigned int, Pose> getAdjacentPoses() { return adjacentPoses_; }
 
   int getId() { return id_; }
 
@@ -33,7 +27,6 @@ class PoseGraphPose {
 
   Polygon polygon_;
 
-  std::map<unsigned int, std::tuple<std::shared_ptr<PoseGraphPose>, Pose>>
-      adjacentPoses_;
+  std::map<unsigned int, Pose> adjacentPoses_;
 }; /* -----  end of class PoseGraphPose  ----- */
 
