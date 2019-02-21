@@ -3,8 +3,8 @@
 
 #include "PolygonPoint.h"
 
-PolygonPoint::PolygonPoint(double x, double y, bool max_sensor_range)
+PolygonPoint::PolygonPoint(double x, double y, PointType point_type)
     : Point(x, y),
-      maxSensorRange_(max_sensor_range) {
+      pointType_(point_type) {
 } /* -----  end of method PolygonPoint::PolygonPoint  (constructor)  ----- */
 

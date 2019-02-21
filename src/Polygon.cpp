@@ -9,18 +9,12 @@
 
 #include "Polygon.h"
 
-Polygon::Polygon(const std::vector<PolygonPoint>& points,
-                 const std::vector<bool>& maximum_ranges)
+Polygon::Polygon(const std::vector<PolygonPoint>& points)
     : polygonFromSensorMeasurements(true) {
   if (points[0] != points.back()) {
     throw std::invalid_argument(
         "First and last point of polygon have to be the same (Polygon should "
         "be closed)");
-  }
-
-  if (points.size() != maximum_ranges.size()) {
-    throw std::invalid_argument(
-        "points and max ranges have not the same size.");
   }
 
   for (const auto& point : points) {
@@ -31,8 +25,6 @@ Polygon::Polygon(const std::vector<PolygonPoint>& points,
   }
 
   boost::geometry::correct(polygon_);
-
-  maximum_ranges_ = maximum_ranges;
 } /* -----  end of method Polygon::Polygon (constructor)  ----- */
 
 Polygon::Polygon(const std::vector<Point>& points)
@@ -44,7 +36,7 @@ Polygon::Polygon(const std::vector<Point>& points)
   }
 
   for (const auto& point : points) {
-    points_.emplace_back(point);
+    points_.emplace_back(point.getX(), point.getY(), PointType::UNKNOWN);
 
     auto boost_point = BoostPoint(point.getX(), point.getY());
     boost::geometry::append(polygon_.outer(), boost_point);
@@ -135,7 +127,7 @@ Polygon Polygon::getPolygonFromBoostPolygon(const BoostPolygon& polygon) const {
   return Polygon(points);
 }
 
-std::vector<Point>& Polygon::getPoints() { return points_; }
+std::vector<PolygonPoint>& Polygon::getPoints() { return points_; }
 
 void Polygon::print() {
   std::cout << "Polygon: " << std::endl;

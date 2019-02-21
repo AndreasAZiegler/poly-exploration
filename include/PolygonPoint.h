@@ -5,18 +5,20 @@
 
 #include "Point.h"
 
+enum class PointType { UNKNOWN, MAX_RANGE, OBSTACLE };
+
 class PolygonPoint : public Point {
  public:
-  PolygonPoint(double x, double y, bool max_sensor_range);
+  PolygonPoint(double x, double y, PointType point_type);
 
   void setInFreeSpace(bool in_free_space) { inFreeSpace_ = in_free_space; }
 
-  bool measuredAtMaximumSensorRange() { return maxSensorRange_; }
+  PointType getPointType() { return pointType_; }
 
   bool isInFreeSpace() { return inFreeSpace_; }
 
  private:
-  bool maxSensorRange_;
+  PointType pointType_;
   bool inFreeSpace_;
 }; /* -----  end of class PolygonPoint  ----- */
 

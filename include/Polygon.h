@@ -15,8 +15,7 @@
 
 class Polygon {
  public:
-  explicit Polygon(const std::vector<PolygonPoint>& points,
-                   const std::vector<bool>& maximum_ranges);
+  explicit Polygon(const std::vector<PolygonPoint>& points);
 
   ~Polygon() = default;
 
@@ -28,7 +27,7 @@ class Polygon {
 
   void printIntersections(const Polygon& polygon);
 
-  std::vector<Point>& getPoints();
+  std::vector<PolygonPoint>& getPoints();
 
   bool isPolygonFromSensorMeasurements() {
     return polygonFromSensorMeasurements;
@@ -48,7 +47,7 @@ class Polygon {
 
   bool polygonFromSensorMeasurements;
 
-  std::vector<Point> points_;
+  std::vector<PolygonPoint> points_;
   BoostPolygon polygon_;
 
   /// Indicates if sensor measurement is recorded at the maximum sensor range

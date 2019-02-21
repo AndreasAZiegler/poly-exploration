@@ -15,22 +15,19 @@ TEST_F(PoseGraphTest, CreateOnePoseGraphPose) {
   PoseGraph pose_graph;
 
   std::vector<PolygonPoint> points;
-  points.emplace_back(0.0, 0.0, false);
-  points.emplace_back(10.0, 10.0, false);
-  points.emplace_back(10.0, 7.5, false);
-  points.emplace_back(10.0, 5.0, false);
-  points.emplace_back(10.0, 2.5, false);
-  points.emplace_back(10.0, 0.0, false);
-  points.emplace_back(10.0, -2.5, false);
-  points.emplace_back(10.0, -5.0, false);
-  points.emplace_back(10.0, -7.5, false);
-  points.emplace_back(10.0, -10.0, false);
-  points.emplace_back(0.0, 0.0, false);
+  points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, 10.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, 7.5, PointType::OBSTACLE);
+  points.emplace_back(10.0, 5.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, 2.5, PointType::OBSTACLE);
+  points.emplace_back(10.0, 0.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, -2.5, PointType::OBSTACLE);
+  points.emplace_back(10.0, -5.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, -7.5, PointType::OBSTACLE);
+  points.emplace_back(10.0, -10.0, PointType::OBSTACLE);
+  points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
 
-  std::vector<bool> maximum_ranges{false, false, false, false, false, false,
-                                   false, false, false, false, false};
-
-  Polygon polygon(points, maximum_ranges);
+  Polygon polygon(points);
 
   pose_graph.addPose(polygon, Pose());
 
@@ -59,22 +56,19 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPoses) {
   PoseGraph pose_graph;
 
   std::vector<PolygonPoint> points;
-  points.emplace_back(0.0, 0.0, false);
-  points.emplace_back(10.0, 10.0, false);
-  points.emplace_back(10.0, 7.5, false);
-  points.emplace_back(10.0, 5.0, false);
-  points.emplace_back(10.0, 2.5, false);
-  points.emplace_back(10.0, 0.0, false);
-  points.emplace_back(10.0, -2.5, false);
-  points.emplace_back(10.0, -5.0, false);
-  points.emplace_back(10.0, -7.5, false);
-  points.emplace_back(10.0, -10.0, false);
-  points.emplace_back(0.0, 0.0, false);
+  points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, 10.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, 7.5, PointType::OBSTACLE);
+  points.emplace_back(10.0, 5.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, 2.5, PointType::OBSTACLE);
+  points.emplace_back(10.0, 0.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, -2.5, PointType::OBSTACLE);
+  points.emplace_back(10.0, -5.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, -7.5, PointType::OBSTACLE);
+  points.emplace_back(10.0, -10.0, PointType::OBSTACLE);
+  points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
 
-  std::vector<bool> maximum_ranges{false, false, false, false, false, false,
-                                   false, false, false, false, false};
-
-  Polygon polygon(points, maximum_ranges);
+  Polygon polygon(points);
 
   pose_graph.addPose(polygon, Pose());
 
@@ -147,22 +141,19 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPosesAndReverseTransform) {
   PoseGraph pose_graph;
 
   std::vector<PolygonPoint> points;
-  points.emplace_back(0.0, 0.0, false);
-  points.emplace_back(10.0, 10.0, false);
-  points.emplace_back(10.0, 7.5, false);
-  points.emplace_back(10.0, 5.0, false);
-  points.emplace_back(10.0, 2.5, false);
-  points.emplace_back(10.0, 0.0, false);
-  points.emplace_back(10.0, -2.5, false);
-  points.emplace_back(10.0, -5.0, false);
-  points.emplace_back(10.0, -7.5, false);
-  points.emplace_back(10.0, -10.0, false);
-  points.emplace_back(0.0, 0.0, false);
+  points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, 10.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, 7.5, PointType::OBSTACLE);
+  points.emplace_back(10.0, 5.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, 2.5, PointType::OBSTACLE);
+  points.emplace_back(10.0, 0.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, -2.5, PointType::OBSTACLE);
+  points.emplace_back(10.0, -5.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, -7.5, PointType::OBSTACLE);
+  points.emplace_back(10.0, -10.0, PointType::OBSTACLE);
+  points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
 
-  std::vector<bool> maximum_ranges{false, false, false, false, false, false,
-                                   false, false, false, false, false};
-
-  Polygon polygon(points, maximum_ranges);
+  Polygon polygon(points);
 
   pose_graph.addPose(polygon, Pose());
 
