@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+#include "Geometry.h"
 #include "Point.h"
 #include "PolygonPoint.h"
 
@@ -23,15 +24,19 @@ class Polygon {
 
   std::vector<Point> getIntersectionPoints(const Polygon& polygon);
 
+  bool checkForIntersections(const Polygon& polygon);
+
   int getNumberOfIntersections(const Polygon& polygon);
 
-  void printIntersections(const Polygon& polygon);
+  Polygon transformPolygon(const Pose& transformation);
 
   std::vector<PolygonPoint>& getPoints();
 
   bool isPolygonFromSensorMeasurements() {
     return polygonFromSensorMeasurements;
   }
+
+  void printIntersections(const Polygon& polygon);
 
   void print();
 

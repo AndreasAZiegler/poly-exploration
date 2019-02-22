@@ -90,6 +90,10 @@ std::vector<Point> Polygon::getIntersectionPoints(const Polygon& polygon) {
   return intersection_points;
 }
 
+bool Polygon::checkForIntersections(const Polygon& polygon) {
+  return boost::geometry::intersects(polygon_, polygon.polygon_);
+}
+
 int Polygon::getNumberOfIntersections(const Polygon& polygon) {
   auto intersection_points = getIntersectionPoints(polygon);
 
@@ -98,6 +102,23 @@ int Polygon::getNumberOfIntersections(const Polygon& polygon) {
   }
 
   return (intersection_points.size() - 1);
+}
+
+Polygon Polygon::transformPolygon(const Pose& transformation) {
+  auto polygon_points = getPoints();
+
+  std::vector<PolygonPoint> transformed_polygon_points;
+
+  for (auto& point : polygon_points) {
+    auto position = Position(point.getX(), point.getY(), 0);
+    auto transformed_position = transformation.transform(position);
+
+    transformed_polygon_points.emplace_back(transformed_position.x(),
+                                            transformed_position.y(),
+                                            point.getPointType());
+  }
+
+  return Polygon(transformed_polygon_points);
 }
 
 void Polygon::printIntersections(const Polygon& polygon) {

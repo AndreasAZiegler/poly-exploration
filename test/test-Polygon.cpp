@@ -91,6 +91,43 @@ TEST_F(PolygonTest, CreatePolygonWithCopy) {
       << "Polygon is not built from sensor measurements";
 }
 
+// Tests that Polygons are transformed correctly
+TEST_F(PolygonTest, TransformPolygonWithPoints) {
+  std::vector<PolygonPoint> points;
+  points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, 10.0, PointType::OBSTACLE);
+  points.emplace_back(10.0, 0, PointType::OBSTACLE);
+  points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+
+  std::vector<PolygonPoint> transformed_points;
+  transformed_points.emplace_back(5.0, 7.0, PointType::OBSTACLE);
+  transformed_points.emplace_back(5.00563, 21.14213562, PointType::OBSTACLE);
+  transformed_points.emplace_back(12.0739, 14.0683,
+                                  PointType::OBSTACLE);
+  transformed_points.emplace_back(5.0, 7.0, PointType::OBSTACLE);
+
+  Polygon polygon(points);
+
+  Pose transformation(
+      Position(5.0, 7.0, 0.0),
+      Rotation(kindr::AngleAxisD(0.785, Eigen::Vector3d(0.0, 0.0, 1.0))));
+
+  auto transformed_polygon = polygon.transformPolygon(transformation);
+
+  auto return_points = transformed_polygon.getPoints();
+
+  ASSERT_EQ(points.size(), return_points.size())
+      << "Vectors points and return_points are of unequal length";
+
+  for (unsigned int i = 0; i < return_points.size(); ++i) {
+    EXPECT_EQ(transformed_points[i], return_points[i])
+        << "Vectors points and return_points differ at index " << i;
+  }
+
+  ASSERT_EQ(polygon.isPolygonFromSensorMeasurements(), true)
+      << "Polygon is not built from sensor measurements";
+}
+
 TEST_F(PolygonTest, CreatePolygonUnion1) {
   std::vector<PolygonPoint> first_polygon_points;
   first_polygon_points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
@@ -147,6 +184,36 @@ TEST_F(PolygonTest, CreatePolygonUnion1) {
       << "Polygon is built from sensor measurements";
 }
 
+TEST_F(PolygonTest, CheckIntersectionsOverlappingPolygons) {
+  std::vector<PolygonPoint> first_polygon_points;
+  first_polygon_points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+  first_polygon_points.emplace_back(0.0, 10.0, PointType::OBSTACLE);
+  first_polygon_points.emplace_back(10.0, 10.0, PointType::OBSTACLE);
+  first_polygon_points.emplace_back(10.0, 0, PointType::OBSTACLE);
+  first_polygon_points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+
+  Polygon first_polygon(first_polygon_points);
+
+  std::vector<PolygonPoint> second_polygon_points;
+  second_polygon_points.emplace_back(5.0, 5.0, PointType::OBSTACLE);
+  second_polygon_points.emplace_back(5.0, 15.0, PointType::OBSTACLE);
+  second_polygon_points.emplace_back(15.0, 15.0, PointType::OBSTACLE);
+  second_polygon_points.emplace_back(15.0, 5.0, PointType::OBSTACLE);
+  second_polygon_points.emplace_back(5.0, 5.0, PointType::OBSTACLE);
+
+  Polygon second_polygon(second_polygon_points);
+
+  auto do_intersect = first_polygon.checkForIntersections(second_polygon);
+
+  ASSERT_TRUE(do_intersect) << "Polygons should intersect";
+
+  ASSERT_EQ(first_polygon.isPolygonFromSensorMeasurements(), true)
+      << "Polygon is not built from sensor measurements";
+
+  ASSERT_EQ(second_polygon.isPolygonFromSensorMeasurements(), true)
+      << "Polygon is not built from sensor measurements";
+}
+
 TEST_F(PolygonTest, GetNumberOfIntersectionsOverlappingPolygons) {
   std::vector<PolygonPoint> first_polygon_points;
   first_polygon_points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
@@ -170,6 +237,36 @@ TEST_F(PolygonTest, GetNumberOfIntersectionsOverlappingPolygons) {
       first_polygon.getNumberOfIntersections(second_polygon);
 
   ASSERT_EQ(number_of_intersections, 4) << "Wrong number of intersections";
+
+  ASSERT_EQ(first_polygon.isPolygonFromSensorMeasurements(), true)
+      << "Polygon is not built from sensor measurements";
+
+  ASSERT_EQ(second_polygon.isPolygonFromSensorMeasurements(), true)
+      << "Polygon is not built from sensor measurements";
+}
+
+TEST_F(PolygonTest, CheckIntersectionsNonOverlappingPolygons) {
+  std::vector<PolygonPoint> first_polygon_points;
+  first_polygon_points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+  first_polygon_points.emplace_back(0.0, 10.0, PointType::OBSTACLE);
+  first_polygon_points.emplace_back(10.0, 10.0, PointType::OBSTACLE);
+  first_polygon_points.emplace_back(10.0, 0, PointType::OBSTACLE);
+  first_polygon_points.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+
+  Polygon first_polygon(first_polygon_points);
+
+  std::vector<PolygonPoint> second_polygon_points;
+  second_polygon_points.emplace_back(15.0, 15.0, PointType::OBSTACLE);
+  second_polygon_points.emplace_back(5.0, 25.0, PointType::OBSTACLE);
+  second_polygon_points.emplace_back(25.0, 25.0, PointType::OBSTACLE);
+  second_polygon_points.emplace_back(25.0, 5.0, PointType::OBSTACLE);
+  second_polygon_points.emplace_back(15.0, 15.0, PointType::OBSTACLE);
+
+  Polygon second_polygon(second_polygon_points);
+
+  auto do_intersect = first_polygon.checkForIntersections(second_polygon);
+
+  ASSERT_FALSE(do_intersect) << "Polygons should not intersect";
 
   ASSERT_EQ(first_polygon.isPolygonFromSensorMeasurements(), true)
       << "Polygon is not built from sensor measurements";

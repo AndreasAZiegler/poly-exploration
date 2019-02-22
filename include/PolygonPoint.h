@@ -11,6 +11,16 @@ class PolygonPoint : public Point {
  public:
   PolygonPoint(double x, double y, PointType point_type);
 
+  bool operator==(const PolygonPoint& point);
+
+  friend bool operator==(const PolygonPoint& lhs,
+                                 const PolygonPoint& rhs);
+
+  virtual bool operator!=(const PolygonPoint& point);
+
+  friend bool operator!=(const PolygonPoint& lhs,
+                         const PolygonPoint& rhs);
+
   void setInFreeSpace(bool in_free_space) { inFreeSpace_ = in_free_space; }
 
   PointType getPointType() { return pointType_; }

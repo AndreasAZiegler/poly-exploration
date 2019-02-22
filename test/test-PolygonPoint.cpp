@@ -50,6 +50,13 @@ TEST_F(PolygonPointTest, CompareUnequalPoints3) {
   ASSERT_FALSE(point_1 == point_2) << "Points are equal";
 }
 
+TEST_F(PolygonPointTest, CompareUnequalPoints4) {
+  PolygonPoint point_1(2.0, 5.0, PointType::OBSTACLE);
+  PolygonPoint point_2(2.0, 5.0, PointType::UNKNOWN);
+
+  ASSERT_NE(point_1, point_2) << "Points are equal";
+}
+
 TEST_F(PolygonPointTest, CompareEqualPoints1) {
   PolygonPoint point_1(2.0, 5.0, PointType::OBSTACLE);
   PolygonPoint point_2(2.0, 5.0, PointType::OBSTACLE);

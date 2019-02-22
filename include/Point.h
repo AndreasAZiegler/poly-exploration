@@ -21,7 +21,7 @@ class Point {
 
   double getY() const { return y_; };
 
- private:
+ protected:
   double x_;
   double y_;
 };
