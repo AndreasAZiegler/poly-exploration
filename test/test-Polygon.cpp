@@ -236,7 +236,7 @@ TEST_F(PolygonTest, GetNumberOfIntersectionsOverlappingPolygons) {
   auto number_of_intersections =
       first_polygon.getNumberOfIntersections(second_polygon);
 
-  ASSERT_EQ(number_of_intersections, 4) << "Wrong number of intersections";
+  ASSERT_EQ(number_of_intersections, 2) << "Wrong number of intersections";
 
   ASSERT_EQ(first_polygon.isPolygonFromSensorMeasurements(), true)
       << "Polygon is not built from sensor measurements";
