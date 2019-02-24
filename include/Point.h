@@ -17,9 +17,9 @@ class Point {
 
   friend bool operator!=(const Point& lhs, const Point& rhs);
 
-  double getX() const { return x_; };
+  double getX() const;
 
-  double getY() const { return y_; };
+  double getY() const;
 
  protected:
   double x_;
