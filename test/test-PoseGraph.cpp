@@ -50,6 +50,10 @@ TEST_F(PoseGraphTest, CreateOnePoseGraphPose) {
   auto adjacent_poses = pose_graph_pose.getAdjacentPoses();
   ASSERT_EQ(adjacent_poses.empty(), true)
       << "There should not be any adjacent pose";
+
+  auto adjacent_pose_ids = pose_graph_pose.getAdjacentPosesId();
+  ASSERT_EQ(adjacent_pose_ids.empty(), true)
+      << "There should not be any adjacent pose";
 }
 
 TEST_F(PoseGraphTest, CreateTwoPoseGraphPoses) {
@@ -88,6 +92,10 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPoses) {
 
   ASSERT_EQ(pose_graph_pose_1.getId(), 0) << "Wrong pose graph pose id";
 
+  auto adjacent_pose_ids_1 = pose_graph_pose_1.getAdjacentPosesId();
+  ASSERT_EQ(adjacent_pose_ids_1.empty(), true)
+      << "There should not be any adjacent pose";
+
   auto adjacent_poses_1 = pose_graph_pose_1.getAdjacentPoses();
   ASSERT_EQ(adjacent_poses_1.empty(), true)
       << "There should not be any adjacent pose";
@@ -113,8 +121,14 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPoses) {
   ASSERT_EQ(pose_graph_pose_2.getId(), 1) << "Wrong pose graph pose id";
 
   pose_graph_pose_1 = pose_graph.getPoseGraphPose(0);
+  adjacent_pose_ids_1 = pose_graph_pose_1.getAdjacentPosesId();
   adjacent_poses_1 = pose_graph_pose_1.getAdjacentPoses();
+  ASSERT_EQ(adjacent_pose_ids_1.size(), 1)
+      << "There should be one adjacent pose";
   ASSERT_EQ(adjacent_poses_1.size(), 1) << "There should be one adjacent pose";
+
+  auto adjacent_pose_ids_2 = pose_graph_pose_2.getAdjacentPosesId();
+  ASSERT_EQ(adjacent_pose_ids_2.size(), 1) << "There should be one adjacent pose";
 
   auto adjacent_poses_2 = pose_graph_pose_2.getAdjacentPoses();
   ASSERT_EQ(adjacent_poses_2.size(), 1) << "There should be one adjacent pose";
@@ -130,11 +144,13 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPoses) {
   Pose return_transformation_1 = adjacent_poses_1[id_pose_graph_pose_2];
   ASSERT_EQ(return_transformation_1, transformation)
       << "There should be one adjacent pose";
+  ASSERT_EQ(adjacent_pose_ids_1.at(0), 1) << "Adjacent pose should have other id.";
 
   unsigned int id_pose_graph_pose_1 = 0;
   Pose return_transformation_2 = adjacent_poses_2[id_pose_graph_pose_1];
   ASSERT_EQ(return_transformation_2, inverted_transformation)
       << "There should be one adjacent pose";
+  ASSERT_EQ(adjacent_pose_ids_2.at(0), 0) << "Adjacent pose should have other id";
 }
 
 TEST_F(PoseGraphTest, CreateTwoPoseGraphPosesAndReverseTransform) {
@@ -174,7 +190,10 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPosesAndReverseTransform) {
   ASSERT_EQ(pose_graph_pose_1.getId(), 0) << "Wrong pose graph pose id";
 
   auto adjacent_poses_1 = pose_graph_pose_1.getAdjacentPoses();
+  auto adjacent_pose_ids_1 = pose_graph_pose_1.getAdjacentPosesId();
   ASSERT_EQ(adjacent_poses_1.empty(), true)
+      << "There should not be any adjacent pose";
+  ASSERT_EQ(adjacent_pose_ids_1.empty(), true)
       << "There should not be any adjacent pose";
 
   Pose transformation(Position(0.5, 0.5, 0), Rotation());
@@ -197,12 +216,18 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPosesAndReverseTransform) {
 
   ASSERT_EQ(pose_graph_pose_2.getId(), 1) << "Wrong pose graph pose id";
 
-  pose_graph_pose_1 = pose_graph.getPoseGraphPose();
+  pose_graph_pose_1 = pose_graph.getPoseGraphPose(0);
   adjacent_poses_1 = pose_graph_pose_1.getAdjacentPoses();
+  adjacent_pose_ids_1 = pose_graph_pose_1.getAdjacentPosesId();
   ASSERT_EQ(adjacent_poses_1.size(), 1) << "There should be one adjacent pose";
+  ASSERT_EQ(adjacent_pose_ids_1.size(), 1) << "There should be one adjacent pose";
+  ASSERT_EQ(adjacent_pose_ids_1.at(0), 1) << "The adjacent pose should have other id";
 
   auto adjacent_poses_2 = pose_graph_pose_2.getAdjacentPoses();
+  auto adjacent_pose_ids_2 = pose_graph_pose_2.getAdjacentPosesId();
   ASSERT_EQ(adjacent_poses_2.size(), 1) << "There should be one adjacent pose";
+  ASSERT_EQ(adjacent_pose_ids_2.size(), 1) << "There should be one adjacent pose";
+  ASSERT_EQ(adjacent_pose_ids_2.at(0), 0) << "The adjacent pose should have other id";
 
   auto inverse_rotation = transformation.getRotation().inverted();
   Pose inverted_transformation(
@@ -210,16 +235,19 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPosesAndReverseTransform) {
 
   pose_graph_pose_1 = pose_graph.getPoseGraphPose(0);
   adjacent_poses_1 = pose_graph_pose_1.getAdjacentPoses();
+  adjacent_pose_ids_1 = pose_graph_pose_1.getAdjacentPosesId();
 
   unsigned int id_pose_graph_pose_2 = 1;
   Pose return_transformation_1 = adjacent_poses_1[id_pose_graph_pose_2];
   ASSERT_EQ(return_transformation_1, transformation)
       << "There should be one adjacent pose";
+  ASSERT_EQ(adjacent_pose_ids_1.at(0), 1) << "The adjacent pose should have other id";
 
   unsigned int id_pose_graph_pose_1 = 0;
   Pose return_transformation_2 = adjacent_poses_2[id_pose_graph_pose_1];
   ASSERT_EQ(return_transformation_2, inverted_transformation)
       << "There should be one adjacent pose";
+  ASSERT_EQ(adjacent_pose_ids_2.at(0), 0) << "The adjacent pose should have other id";
 
   pose_graph.connectTwoPoses(1, 0, transformation);
 
