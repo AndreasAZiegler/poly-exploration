@@ -16,13 +16,13 @@ class PoseGraphPose {
 
   void addAdjacentPose(unsigned int pose_graph_pose_id, Pose& transformation);
 
-  Polygon& getPolygon() { return polygon_; }
+  Polygon& getPolygon();
 
-  std::map<unsigned int, Pose> getAdjacentPoses() { return adjacentPoses_; }
+  std::map<unsigned int, Pose> getAdjacentPoses();
 
   std::vector<unsigned int> getAdjacentPosesId();
 
-  int getId() { return id_; }
+  int getId();
 
  private:
   int id_;
