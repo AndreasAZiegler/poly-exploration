@@ -21,11 +21,7 @@ class PolygonPoint : public Point {
   friend bool operator!=(const PolygonPoint& lhs,
                          const PolygonPoint& rhs);
 
-  void setInFreeSpace(bool in_free_space);
-
   PointType getPointType() const;
-
-  bool isInFreeSpace() const;
 
  private:
   PointType pointType_;

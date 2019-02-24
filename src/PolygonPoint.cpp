@@ -30,10 +30,4 @@ bool operator!=(const PolygonPoint& lhs, const PolygonPoint& rhs) {
          (lhs.pointType_ != rhs.pointType_);
 }
 
-void PolygonPoint::setInFreeSpace(bool in_free_space) {
-  inFreeSpace_ = in_free_space;
-}
-
 PointType PolygonPoint::getPointType() const { return pointType_; }
-
-bool PolygonPoint::isInFreeSpace() const { return inFreeSpace_; }
