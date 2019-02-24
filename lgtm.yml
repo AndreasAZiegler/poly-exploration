@@ -1,6 +1,6 @@
 extraction:
   cpp:
-    before_index:
+    after_prepare:
       - git clone https://github.com/ANYbotics/kindr.git && \
             cd kindr && \
             git checkout 1.1.3 && \
