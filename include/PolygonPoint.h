@@ -23,9 +23,9 @@ class PolygonPoint : public Point {
 
   void setInFreeSpace(bool in_free_space) { inFreeSpace_ = in_free_space; }
 
-  PointType getPointType() { return pointType_; }
+  PointType getPointType() const { return pointType_; }
 
-  bool isInFreeSpace() { return inFreeSpace_; }
+  bool isInFreeSpace() const { return inFreeSpace_; }
 
  private:
   PointType pointType_;

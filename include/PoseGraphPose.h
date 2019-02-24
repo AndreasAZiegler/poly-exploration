@@ -10,8 +10,6 @@
 #include "Geometry.h"
 #include "Polygon.h"
 
-enum class EdgeType { FRONTIER, OBSTACLE, FREE_SPACE };
-
 class PoseGraphPose {
  public:
   PoseGraphPose(Polygon& polygon, unsigned int pose_graph_pose_id);
@@ -22,6 +20,8 @@ class PoseGraphPose {
 
   std::map<unsigned int, Pose> getAdjacentPoses() { return adjacentPoses_; }
 
+  std::vector<unsigned int> getAdjacentPosesId();
+
   int getId() { return id_; }
 
  private:
@@ -29,8 +29,6 @@ class PoseGraphPose {
 
   Polygon polygon_;
 
-  std::vector<EdgeType> polygonEdgeTypes_;
-
-      std::map<unsigned int, Pose> adjacentPoses_;
+  std::map<unsigned int, Pose> adjacentPoses_;
 }; /* -----  end of class PoseGraphPose  ----- */
 

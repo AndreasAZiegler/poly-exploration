@@ -22,6 +22,8 @@ class PoseGraph {
   PoseGraphPose& getPoseGraphPose(const unsigned int id);
 
  private:
+  void consolidatePolygon(unsigned int pose_graph_pose_id);
+
   unsigned int currentPoseGraphPoseId_;
 
   std::vector<PoseGraphPose> poseGraphPoses_;

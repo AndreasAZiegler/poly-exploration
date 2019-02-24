@@ -14,6 +14,10 @@
 #include "Point.h"
 #include "PolygonPoint.h"
 
+enum class EdgeType { FRONTIER, OBSTACLE, FREE_SPACE };
+
+std::ostream& operator<<(std::ostream& os, const EdgeType& edge_type);
+
 class Polygon {
  public:
   explicit Polygon(const std::vector<PolygonPoint>& points);
@@ -31,6 +35,8 @@ class Polygon {
   Polygon transformPolygon(const Pose& transformation);
 
   std::vector<PolygonPoint>& getPoints();
+
+  std::vector<EdgeType>& getEdgeTypes();
 
   bool isPolygonFromSensorMeasurements() {
     return polygonFromSensorMeasurements;
@@ -55,6 +61,5 @@ class Polygon {
   std::vector<PolygonPoint> points_;
   BoostPolygon polygon_;
 
-  /// Indicates if sensor measurement is recorded at the maximum sensor range
-  std::vector<bool> maximum_ranges_;
+  std::vector<EdgeType> edgeTypes_;
 }; /* -----  end of class Polygon  ----- */

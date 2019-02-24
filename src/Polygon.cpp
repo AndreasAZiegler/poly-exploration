@@ -9,6 +9,22 @@
 
 #include "Polygon.h"
 
+std::ostream& operator<<(std::ostream& os, const EdgeType& edge_type) {
+  switch (edge_type) {
+    case EdgeType::FREE_SPACE:
+      os << "FREE_SPACE";
+      break;
+    case EdgeType::FRONTIER:
+      os << "FRONTIER";
+      break;
+    case EdgeType::OBSTACLE:
+      os << "OBSTACLE";
+      break;
+  }
+
+  return os;
+}
+
 Polygon::Polygon(const std::vector<PolygonPoint>& points)
     : polygonFromSensorMeasurements(true) {
   if (points[0] != points.back()) {
@@ -25,6 +41,17 @@ Polygon::Polygon(const std::vector<PolygonPoint>& points)
   }
 
   boost::geometry::correct(polygon_);
+
+  edgeTypes_.reserve(points.size());
+
+  for (unsigned int i = 0; i < points.size(); ++i) {
+    if ((points.at(i).getPointType() == PointType::MAX_RANGE) ||
+        (points.at((i + 1) % points.size()).getPointType() == PointType::MAX_RANGE)) {
+      edgeTypes_.emplace_back(EdgeType::FRONTIER); 
+    } else {
+      edgeTypes_.emplace_back(EdgeType::OBSTACLE); 
+    }
+  }
 } /* -----  end of method Polygon::Polygon (constructor)  ----- */
 
 Polygon::Polygon(const std::vector<Point>& points)
@@ -67,27 +94,17 @@ std::vector<Point> Polygon::getIntersectionPoints(const Polygon& polygon) {
   boost::geometry::intersection(polygon_, polygon.polygon_,
                                 intersection_boost_points);
 
-  /*
-  if (1 < intersection_polygons.size()) {
-    throw std::runtime_error("Intersection results in more than one polygon.");
-  }
-  */
-
   std::vector<Point> intersection_points;
 
   if (intersection_boost_points.empty()) {
     return intersection_points;
   }
 
-  // Reference to the points of the intersection polygon
-  //const auto& polygon_points = intersection_polygons[0].outer();
-
-  //for (std::vector<BoostPoint>::size_type i = 0; i < polygon_points.size();
-  for (std::vector<BoostPoint>::size_type i = 0; i < intersection_boost_points.size();
-       ++i) {
+  for (std::vector<BoostPoint>::size_type i = 0;
+       i < intersection_boost_points.size(); ++i) {
     intersection_points.emplace_back(
         boost::geometry::get<0>(intersection_boost_points[i]),
-              boost::geometry::get<1>(intersection_boost_points[i]));
+        boost::geometry::get<1>(intersection_boost_points[i]));
   }
 
   return intersection_points;
@@ -122,6 +139,10 @@ Polygon Polygon::transformPolygon(const Pose& transformation) {
   }
 
   return Polygon(transformed_polygon_points);
+}
+
+std::vector<EdgeType>& Polygon::getEdgeTypes() {
+  return edgeTypes_;
 }
 
 void Polygon::printIntersections(const Polygon& polygon) {
