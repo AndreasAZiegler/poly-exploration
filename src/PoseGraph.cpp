@@ -60,6 +60,7 @@ void PoseGraph::addPose(Polygon& polygon, Pose transformation) {
   currentPoseGraphPoseId_++;
 }
 
+/*
 void PoseGraph::consolidatePolygon(unsigned int pose_graph_pose_id) {
   std::queue<unsigned int> intersected_polygon_owners;
   std::stack<unsigned int> candidate_polygon_owners;
@@ -91,6 +92,7 @@ void PoseGraph::consolidatePolygon(unsigned int pose_graph_pose_id) {
     previous_pose_graph_pose_id = current_pose_graph_pose_id;
   }
 }
+*/
 
 void PoseGraph::connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
                                 Pose transformation) {
