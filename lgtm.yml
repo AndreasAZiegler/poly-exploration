@@ -1,7 +1,7 @@
 extraction:
   cpp:
     after_prepare:
-      - git config --global https.postBuffer 524288000
+      - git config --global https.postBuffer 1048576000
       - git clone -v https://github.com/ANYbotics/kindr.git
       - cd kindr
       - git checkout 1.1.3
