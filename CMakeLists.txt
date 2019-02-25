@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(poly-exploration)
 
 LIST(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-modules")
+add_subdirectory(libs/kindr)
 
 # Set the compiler options
 set(CMAKE_CXX_STANDARD 17)
