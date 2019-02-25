@@ -1,0 +1,3 @@
+[submodule "libs/kindr"]
+	path = libs/kindr
+	url = git@github.com:ANYbotics/kindr.git
