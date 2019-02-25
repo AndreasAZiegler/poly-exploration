@@ -16,15 +16,10 @@ jobs:
           name: Install gtest
           command: 'cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo cp *.a /usr/lib'
       - run:
-          name: Install kindr
+          name: "Pull Submodules"
           command: |
-            git clone https://github.com/ANYbotics/kindr.git
-            cd kindr
-            git checkout 1.1.3
-            mkdir build
-            cd build
-            cmake ..
-            sudo make install
+            git submodule init
+            git submodule update --remote
       - run:
           name: CMake
           command: 'mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Debug'
