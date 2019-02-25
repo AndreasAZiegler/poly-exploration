@@ -2,7 +2,7 @@ extraction:
   cpp:
     after_prepare:
       - git config --global http.postBuffer 1048576000
-      - git clone -v https://github.com/ANYbotics/kindr.git
+      - GIT_CURL_VERBOSE=1 git clone https://github.com/ANYbotics/kindr.git
       - cd kindr
       - git checkout 1.1.3
       - mkdir build
