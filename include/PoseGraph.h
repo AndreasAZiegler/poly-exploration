@@ -12,14 +12,14 @@ class PoseGraph {
  public:
   PoseGraph();
 
-  void addPose(Polygon& polygon, Pose transformation);
+  void addPose(const Polygon& polygon, Pose transformation);
 
   void connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
                        Pose transformation);
 
-  PoseGraphPose& getPoseGraphPose(void);
+  PoseGraphPose& getPoseGraphPose();
 
-  PoseGraphPose& getPoseGraphPose(const unsigned int id);
+  PoseGraphPose& getPoseGraphPose(unsigned int id);
 
  private:
   void consolidatePolygon(unsigned int pose_graph_pose_id);

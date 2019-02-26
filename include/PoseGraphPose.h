@@ -12,9 +12,10 @@
 
 class PoseGraphPose {
  public:
-  PoseGraphPose(Polygon& polygon, unsigned int pose_graph_pose_id);
+  PoseGraphPose(const Polygon& polygon, unsigned int pose_graph_pose_id);
 
-  void addAdjacentPose(unsigned int pose_graph_pose_id, Pose& transformation);
+  void addAdjacentPose(unsigned int pose_graph_pose_id,
+                       const Pose& transformation);
 
   Polygon& getPolygon();
 

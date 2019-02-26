@@ -6,7 +6,7 @@
 
 PoseGraph::PoseGraph() : currentPoseGraphPoseId_(0) {}
 
-void PoseGraph::addPose(Polygon& polygon, Pose transformation) {
+void PoseGraph::addPose(const Polygon& polygon, Pose transformation) {
   PoseGraphPose pose_graph_pose(polygon, currentPoseGraphPoseId_);
 
   poseGraphPoses_.emplace_back(pose_graph_pose);
@@ -78,13 +78,15 @@ void PoseGraph::consolidatePolygon(unsigned int pose_graph_pose_id) {
 
   while (!intersected_polygon_owners.empty()) {
     auto current_pose_graph_pose_id = candidate_polygon_owners.top();
-    auto adjacent_poses = poseGraphPoses_[current_pose_graph_pose_id].getAdjacentPoses();
-    auto adjacent_transformation = adjacent_poses[previous_pose_graph_pose_id];
+    auto adjacent_poses =
+poseGraphPoses_[current_pose_graph_pose_id].getAdjacentPoses(); auto
+adjacent_transformation = adjacent_poses[previous_pose_graph_pose_id];
     transformation = transformation * adjacent_transformation;
 
     auto other_polygon =
         poseGraphPoses_[current_pose_graph_pose_id].getPolygon();
-    auto other_polygon_transformed = other_polygon.transformPolygon(transformation);
+    auto other_polygon_transformed =
+other_polygon.transformPolygon(transformation);
 
     if (current_polygon.checkForIntersections(other_polygon)) {
     }
@@ -106,7 +108,7 @@ void PoseGraph::connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
                                              inverted_transformation);
 }
 
-PoseGraphPose& PoseGraph::getPoseGraphPose(void) {
+PoseGraphPose& PoseGraph::getPoseGraphPose() {
   auto& pose_graph = poseGraphPoses_.back();
 
   /*
