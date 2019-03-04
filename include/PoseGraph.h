@@ -3,6 +3,11 @@
 
 #pragma once
 
+#include <gtest/gtest_prod.h>
+#include <queue>
+#include <set>
+#include <stack>
+#include <tuple>
 #include <vector>
 #include "Geometry.h"
 #include "Polygon.h"
@@ -17,6 +22,8 @@ class PoseGraph {
   void connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
                        Pose transformation);
 
+  std::vector<PoseGraphPose> getPoseGraphPoses();
+
   PoseGraphPose& getPoseGraphPose();
 
   PoseGraphPose& getPoseGraphPose(unsigned int id);
@@ -27,5 +34,9 @@ class PoseGraph {
   unsigned int currentPoseGraphPoseId_;
 
   std::vector<PoseGraphPose> poseGraphPoses_;
+
+ public:
+  FRIEND_TEST(PoseGraphTest, ConsolidatePolygon);
+  FRIEND_TEST(PoseGraphTest, GetIntersectedPolygonOwners1);
 }; /* -----  end of class PoseGraph  ----- */
 

@@ -2,6 +2,8 @@
  */
 
 #include "Polygon.h"
+#include <glog/logging.h>
 
-int main(void) {
+int main(int argc, char **argv) {
+  google::InitGoogleLogging(argv[0]);  // init google logging
 }

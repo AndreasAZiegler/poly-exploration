@@ -18,7 +18,7 @@ void PoseGraphPose::addAdjacentPose(unsigned int pose_graph_pose_id,
 
 Polygon& PoseGraphPose::getPolygon() { return polygon_; }
 
-std::map<unsigned int, Pose> PoseGraphPose::getAdjacentPoses() {
+std::map<unsigned int, Pose> PoseGraphPose::getAdjacentPoses() const {
   return adjacentPoses_;
 }
 
@@ -33,4 +33,16 @@ std::vector<unsigned int> PoseGraphPose::getAdjacentPosesId() {
   return adjacent_pose_graph_pose_ids;
 }
 
-int PoseGraphPose::getId() { return id_; }
+int PoseGraphPose::getId() const { return id_; }
+
+std::ostream& operator<<(std::ostream& os,
+                         const PoseGraphPose& pose_graph_pose) {
+  os << "PoseGraphPose:" << std::endl
+     << "Id: " << pose_graph_pose.getId() << std::endl;
+
+  for (auto const & [ key, val ] : pose_graph_pose.getAdjacentPoses()) {
+    os << "Adjacent pose " << key << " transformation: " << val << std::endl;
+  }
+
+  return os;
+}
