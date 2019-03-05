@@ -20,7 +20,7 @@ PolygonConsolidation::getIntersectedPolygonOwners(
 
   // Get current pose and its polygon
   PoseGraphPose& current_pose_graph_pose = pose_graph_poses[pose_graph_pose_id];
-  Polygon& current_polygon = current_pose_graph_pose.getPolygon();
+  Polygon current_polygon = current_pose_graph_pose.getPolygon();
 
   // Add adjacent poses and the corresponding transformation of the current pose
   // This initializes the candidates stack

@@ -16,13 +16,13 @@ void PoseGraphPose::addAdjacentPose(unsigned int pose_graph_pose_id,
   adjacentPoses_[pose_graph_pose_id] = transformation;
 }
 
-Polygon& PoseGraphPose::getPolygon() { return polygon_; }
+Polygon PoseGraphPose::getPolygon() const { return polygon_; }
 
 std::map<unsigned int, Pose> PoseGraphPose::getAdjacentPoses() const {
   return adjacentPoses_;
 }
 
-std::vector<unsigned int> PoseGraphPose::getAdjacentPosesId() {
+std::vector<unsigned int> PoseGraphPose::getAdjacentPosesId() const {
   std::vector<unsigned int> adjacent_pose_graph_pose_ids;
   adjacent_pose_graph_pose_ids.reserve(adjacentPoses_.size());
 

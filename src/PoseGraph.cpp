@@ -2,12 +2,13 @@
  */
 
 #include "PoseGraph.h"
+#include <glog/logging.h>
 #include <memory>
 #include "PolygonConsolidation.h"
 
 PoseGraph::PoseGraph() : currentPoseGraphPoseId_(0) {}
 
-void PoseGraph::addPose(const Polygon& polygon, Pose transformation) {
+void PoseGraph::addPose(const Polygon& polygon, const Pose transformation) {
   PoseGraphPose pose_graph_pose(polygon, currentPoseGraphPoseId_);
 
   poseGraphPoses_.emplace_back(pose_graph_pose);
@@ -58,19 +59,19 @@ void PoseGraph::addPose(const Polygon& polygon, Pose transformation) {
     */
   }
 
-  //consolidatePolygon(currentPoseGraphPoseId_);
+  // consolidatePolygon(currentPoseGraphPoseId_);
 
   currentPoseGraphPoseId_++;
 }
 
-void PoseGraph::consolidatePolygon(unsigned int pose_graph_pose_id) {
+void PoseGraph::consolidatePolygon(const unsigned int pose_graph_pose_id) {
   auto intersected_polygon_owners =
       PolygonConsolidation::getIntersectedPolygonOwners(pose_graph_pose_id,
                                                         poseGraphPoses_);
 }
 
 void PoseGraph::connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
-                                Pose transformation) {
+                                const Pose transformation) {
   auto inverse_rotation = transformation.getRotation().inverted();
   Pose inverted_transformation(
       -inverse_rotation.rotate(transformation.getPosition()), inverse_rotation);
@@ -81,30 +82,35 @@ void PoseGraph::connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
                                              inverted_transformation);
 }
 
-std::vector<PoseGraphPose> PoseGraph::getPoseGraphPoses() {
+std::vector<PoseGraphPose> PoseGraph::getPoseGraphPoses() const {
   return std::move(poseGraphPoses_);
 }
 
-PoseGraphPose& PoseGraph::getPoseGraphPose() {
-  auto& pose_graph = poseGraphPoses_.back();
-
+PoseGraphPose PoseGraph::getPoseGraphPose() const {
+  CHECK(!poseGraphPoses_.empty())
+      << "There should be at least one pose in the pose graph!";
   /*
+  auto pose_graph = poseGraphPoses_.back();
+
   if (!pose_graph.getAdjacentPoses().empty()) {
     std::cout << "PoseGraph::getPoseGraphPose(void): Transformation: "
               << std::get<1>(pose_graph.getAdjacentPoses()[0]) << std::endl;
   }
-  */
 
   return pose_graph;
+  */
+  return poseGraphPoses_.back();
 }
 
-PoseGraphPose& PoseGraph::getPoseGraphPose(const unsigned int id) {
+PoseGraphPose PoseGraph::getPoseGraphPose(const unsigned int id) const {
+  CHECK(poseGraphPoses_.size() > id) << "Id has to be within range!";
+  /*
   auto& pose_graph = poseGraphPoses_.at(id);
 
-  /*
   std::cout << "PoseGraph::getPoseGraphPose(void): Transformation: "
             << std::get<1>(pose_graph.getAdjacentPoses()[0]) << std::endl;
-  */
 
   return pose_graph;
+  */
+  return poseGraphPoses_.at(id);
 }

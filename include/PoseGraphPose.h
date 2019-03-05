@@ -18,11 +18,11 @@ class PoseGraphPose {
   void addAdjacentPose(unsigned int pose_graph_pose_id,
                        const Pose& transformation);
 
-  Polygon& getPolygon();
+  Polygon getPolygon() const;
 
   std::map<unsigned int, Pose> getAdjacentPoses() const;
 
-  std::vector<unsigned int> getAdjacentPosesId();
+  std::vector<unsigned int> getAdjacentPosesId() const;
 
   int getId() const;
 

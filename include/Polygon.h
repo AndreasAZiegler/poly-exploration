@@ -26,27 +26,27 @@ class Polygon {
 
   Polygon buildUnion(const Polygon& polygon) const;
 
-  std::vector<Point> getIntersectionPoints(const Polygon& polygon);
+  std::vector<Point> getIntersectionPoints(const Polygon& polygon) const;
 
-  bool checkForIntersections(const Polygon& polygon);
+  bool checkForIntersections(const Polygon& polygon) const;
 
-  int getNumberOfIntersections(const Polygon& polygon);
+  int getNumberOfIntersections(const Polygon& polygon) const;
 
-  Polygon transformPolygon(const Pose& transformation);
+  Polygon transformPolygon(const Pose& transformation) const;
 
-  std::vector<PolygonPoint>& getPoints();
+  std::vector<PolygonPoint> getPoints() const;
 
-  std::vector<EdgeType>& getEdgeTypes();
+  std::vector<EdgeType> getEdgeTypes() const;
 
   bool isPolygonFromSensorMeasurements() {
     return polygonFromSensorMeasurements;
   }
 
-  void printIntersections(const Polygon& polygon);
+  void printIntersections(const Polygon& polygon) const;
 
-  void print();
+  void print() const;
 
-  void plot(const std::string& filename);
+  void plot(const std::string& filename) const;
 
  private:
   explicit Polygon(const std::vector<Point>& points);

@@ -17,19 +17,19 @@ class PoseGraph {
  public:
   PoseGraph();
 
-  void addPose(const Polygon& polygon, Pose transformation);
+  void addPose(const Polygon& polygon, const Pose transformation);
 
   void connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
-                       Pose transformation);
+                       const Pose transformation);
 
-  std::vector<PoseGraphPose> getPoseGraphPoses();
+  std::vector<PoseGraphPose> getPoseGraphPoses() const;
 
-  PoseGraphPose& getPoseGraphPose();
+  PoseGraphPose getPoseGraphPose() const;
 
-  PoseGraphPose& getPoseGraphPose(unsigned int id);
+  PoseGraphPose getPoseGraphPose(const unsigned int id) const;
 
  private:
-  void consolidatePolygon(unsigned int pose_graph_pose_id);
+  void consolidatePolygon(const unsigned int pose_graph_pose_id);
 
   unsigned int currentPoseGraphPoseId_;
 

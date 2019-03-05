@@ -1,6 +1,7 @@
 /* Polygon representation based on boost::Geometry.
  */
 
+#include <glog/logging.h>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
@@ -27,11 +28,9 @@ std::ostream& operator<<(std::ostream& os, const EdgeType& edge_type) {
 
 Polygon::Polygon(const std::vector<PolygonPoint>& points)
     : polygonFromSensorMeasurements(true) {
-  if (points[0] != points.back()) {
-    throw std::invalid_argument(
-        "First and last point of polygon have to be the same (Polygon should "
-        "be closed)");
-  }
+  CHECK(points[0] == points.back()) << "First and last point of polygon have "
+                                       "to be the same (Polygon should be "
+                                       "closed)";
 
   for (const auto& point : points) {
     points_.emplace_back(point);
@@ -46,21 +45,20 @@ Polygon::Polygon(const std::vector<PolygonPoint>& points)
 
   for (unsigned int i = 0; i < points.size(); ++i) {
     if ((points.at(i).getPointType() == PointType::MAX_RANGE) ||
-        (points.at((i + 1) % points.size()).getPointType() == PointType::MAX_RANGE)) {
-      edgeTypes_.emplace_back(EdgeType::FRONTIER); 
+        (points.at((i + 1) % points.size()).getPointType() ==
+         PointType::MAX_RANGE)) {
+      edgeTypes_.emplace_back(EdgeType::FRONTIER);
     } else {
-      edgeTypes_.emplace_back(EdgeType::OBSTACLE); 
+      edgeTypes_.emplace_back(EdgeType::OBSTACLE);
     }
   }
 } /* -----  end of method Polygon::Polygon (constructor)  ----- */
 
 Polygon::Polygon(const std::vector<Point>& points)
     : polygonFromSensorMeasurements(false) {
-  if (points[0] != points.back()) {
-    throw std::invalid_argument(
-        "First and last point of polygon have to be the same (Polygon should "
-        "be closed)");
-  }
+  CHECK(points[0] == points.back()) << "First and last point of polygon have "
+                                       "to be the same (Polygon should be "
+                                       "closed)";
 
   for (const auto& point : points) {
     points_.emplace_back(point.getX(), point.getY(), PointType::UNKNOWN);
@@ -88,7 +86,7 @@ Polygon Polygon::buildUnion(const Polygon& polygon) const {
   return getPolygonFromBoostPolygon(output_polygon);
 }
 
-std::vector<Point> Polygon::getIntersectionPoints(const Polygon& polygon) {
+std::vector<Point> Polygon::getIntersectionPoints(const Polygon& polygon) const {
   std::vector<BoostPoint> intersection_boost_points;
 
   boost::geometry::intersection(polygon_, polygon.polygon_,
@@ -110,11 +108,11 @@ std::vector<Point> Polygon::getIntersectionPoints(const Polygon& polygon) {
   return intersection_points;
 }
 
-bool Polygon::checkForIntersections(const Polygon& polygon) {
+bool Polygon::checkForIntersections(const Polygon& polygon) const {
   return boost::geometry::intersects(polygon_, polygon.polygon_);
 }
 
-int Polygon::getNumberOfIntersections(const Polygon& polygon) {
+int Polygon::getNumberOfIntersections(const Polygon& polygon) const {
   auto intersection_points = getIntersectionPoints(polygon);
 
   if (intersection_points.empty()) {
@@ -124,7 +122,7 @@ int Polygon::getNumberOfIntersections(const Polygon& polygon) {
   return intersection_points.size();
 }
 
-Polygon Polygon::transformPolygon(const Pose& transformation) {
+Polygon Polygon::transformPolygon(const Pose& transformation) const {
   auto polygon_points = getPoints();
 
   std::vector<PolygonPoint> transformed_polygon_points;
@@ -141,11 +139,9 @@ Polygon Polygon::transformPolygon(const Pose& transformation) {
   return Polygon(transformed_polygon_points);
 }
 
-std::vector<EdgeType>& Polygon::getEdgeTypes() {
-  return edgeTypes_;
-}
+std::vector<EdgeType> Polygon::getEdgeTypes() const { return edgeTypes_; }
 
-void Polygon::printIntersections(const Polygon& polygon) {
+void Polygon::printIntersections(const Polygon& polygon) const {
   auto intersection_points = getIntersectionPoints(polygon);
   if (!intersection_points.empty()) {
     std::cout << "Intersections: " << std::endl;
@@ -172,9 +168,9 @@ Polygon Polygon::getPolygonFromBoostPolygon(const BoostPolygon& polygon) const {
   return Polygon(points);
 }
 
-std::vector<PolygonPoint>& Polygon::getPoints() { return points_; }
+std::vector<PolygonPoint> Polygon::getPoints() const { return points_; }
 
-void Polygon::print() {
+void Polygon::print() const {
   std::cout << "Polygon: " << std::endl;
 
   for (const auto& point : points_) {
@@ -182,7 +178,7 @@ void Polygon::print() {
   }
 }
 
-void Polygon::plot(const std::string& filename) {
+void Polygon::plot(const std::string& filename) const {
   // Declare a stream and an SVG mapper
   std::ofstream svg(filename);
   boost::geometry::svg_mapper<BoostPoint> mapper(svg, 800, 500);
