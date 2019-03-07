@@ -2,9 +2,11 @@
  */
 
 #include "PoseGraph.h"
+#include "PolygonConsolidation.h"
 #include <glog/logging.h>
 #include <memory>
-#include "PolygonConsolidation.h"
+#include <utility>
+#include <vector>
 
 PoseGraph::PoseGraph() : currentPoseGraphPoseId_(0) {}
 
@@ -27,36 +29,19 @@ void PoseGraph::addPose(const Polygon& polygon, const Pose transformation) {
     poseGraphPoses_[currentPoseGraphPoseId_ - 1].addAdjacentPose(
         currentPoseGraphPoseId_, transformation);
 
-    /*
-    std::cout << "Pose graph pose: " << currentPoseGraphPoseId_ - 1
-              << " adjacent pose graph pose: " << currentPoseGraphPoseId_
-              << std::endl;
-
-    std::cout << "PoseGraph::addPose(): Transformation: " << transformation
-              << std::endl;
-
-    std::cout << "PoseGraph::addPose(): From Map Transformation: "
-              << std::get<1>(poseGraphPoses_[currentPoseGraphPoseId_ - 1]
-                                 .getAdjacentPoses()[currentPoseGraphPoseId_])
-              << std::endl;
-    */
+    LOG(INFO) << "Transformation between pose graph pose ("
+              << currentPoseGraphPoseId_ - 1
+              << ") and adjacent pose graph pose (" << currentPoseGraphPoseId_
+              << "):" << std::endl
+              << transformation;
 
     poseGraphPoses_.back().addAdjacentPose(currentPoseGraphPoseId_ - 1,
                                            inverted_transformation);
 
-    /*
-    std::cout << "Pose graph pose: " << currentPoseGraphPoseId_
-              << " adjacent pose graph pose: " << currentPoseGraphPoseId_ - 1
-              << std::endl;
-
-    std::cout << "PoseGraph::addPose(): Inverted transformation: "
-              << inverted_transformation << std::endl;
-
-    std::cout << "PoseGraph::addPose(): From Map Inverted transformation: "
-              << std::get<1>(poseGraphPoses_.back()
-                                 .getAdjacentPoses()[currentPoseGraphPoseId_])
-              << std::endl;
-    */
+    LOG(INFO) << "Transformation between pose graph pose ("
+              << currentPoseGraphPoseId_ << ") and adjacent pose graph pose ("
+              << currentPoseGraphPoseId_ - 1 << "):" << std::endl
+              << inverted_transformation;
   }
 
   // consolidatePolygon(currentPoseGraphPoseId_);

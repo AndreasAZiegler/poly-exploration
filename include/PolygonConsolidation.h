@@ -16,10 +16,10 @@ class PolygonConsolidation {
       unsigned int pose_graph_pose_id,
       std::vector<PoseGraphPose>& pose_graph_poses);
 
-  static void addAdjacentCandidates(
-      unsigned int current_candidate_id, Pose& current_transformation,
-      std::stack<std::tuple<unsigned int, unsigned int, Pose>>& candidates,
-      std::set<unsigned int>& checked_candidates_id,
-      std::vector<PoseGraphPose>& pose_graph_poses);
+  static std::vector<std::tuple<unsigned int, unsigned int, Pose, Pose>>
+  addAdjacentCandidates(unsigned int current_candidate_id,
+                        Pose& current_transformation,
+                        std::set<unsigned int>& checked_candidates_id,
+                        std::vector<PoseGraphPose>& pose_graph_poses);
 }; /* -----  end of class PolygonConsolidation  ----- */
 
