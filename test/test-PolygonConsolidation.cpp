@@ -1,8 +1,8 @@
 /*  PolygonConsolidation unit test
  */
 
-#include <vector>
 #include <set>
+#include <vector>
 #include "PolygonConsolidation.h"
 #include "gtest/gtest.h"
 
@@ -53,7 +53,7 @@ TEST_F(PolygonConsolidationTest, GetAdjacentCandidates1) {
   auto previous_candidate_id = std::get<1>(candidates.at(0));
   EXPECT_EQ(previous_candidate_id, 0) << "Wrong previous candidate id";
 
-  Pose expected_transformation(Position(-5.0, 0.0, 0), Rotation());
+  auto expected_transformation = transformation;
   auto candidate_transformation = std::get<2>(candidates.at(0));
   EXPECT_EQ(candidate_transformation, expected_transformation)
       << "Wrong transformation";
@@ -72,7 +72,7 @@ TEST_F(PolygonConsolidationTest, GetAdjacentCandidates1) {
   previous_candidate_id = std::get<1>(candidates.at(0));
   EXPECT_EQ(previous_candidate_id, 1) << "Wrong previous candidate id";
 
-  expected_transformation = Pose(Position(5.0, 0.0, 0), Rotation());
+  expected_transformation = Pose(Position(-5.0, 0.0, 0), Rotation());
   candidate_transformation = std::get<2>(candidates.at(0));
   EXPECT_EQ(candidate_transformation, expected_transformation)
       << "Wrong transformation";
@@ -133,10 +133,7 @@ TEST_F(PolygonConsolidationTest, GetAdjacentCandidates2) {
   auto previous_candidate_id = std::get<1>(candidates.at(0));
   EXPECT_EQ(previous_candidate_id, 0) << "Wrong previous candidate id";
 
-  auto inverse_rotation = transformation1.getRotation().inverted();
-  Pose expected_transformation(
-      -inverse_rotation.rotate(transformation1.getPosition()),
-      inverse_rotation);
+  auto expected_transformation = transformation1;
   auto candidate_transformation = std::get<2>(candidates.at(0));
   EXPECT_EQ(candidate_transformation, expected_transformation)
       << "Wrong transformation";
@@ -159,10 +156,7 @@ TEST_F(PolygonConsolidationTest, GetAdjacentCandidates2) {
 
   expected_transformation = Pose(Position(5.0, 0.0, 0), Rotation());
 
-  inverse_rotation = transformation2.getRotation().inverted();
-  expected_transformation =
-      Pose(-inverse_rotation.rotate(transformation2.getPosition()),
-           inverse_rotation);
+  expected_transformation = transformation2;
   candidate_transformation = std::get<2>(candidates.at(1));
   EXPECT_EQ(candidate_transformation, expected_transformation)
       << "Wrong transformation";
@@ -176,6 +170,12 @@ TEST_F(PolygonConsolidationTest, GetAdjacentCandidates2) {
   EXPECT_EQ(previous_candidate_id, 1) << "Wrong previous candidate id";
 
   expected_transformation = transformation1;
+
+  auto inverse_rotation = transformation1.getRotation().inverted();
+  expected_transformation =
+      Pose(-inverse_rotation.rotate(transformation1.getPosition()),
+           inverse_rotation);
+
   candidate_transformation = std::get<2>(candidates.at(0));
   EXPECT_EQ(candidate_transformation, expected_transformation)
       << "Wrong transformation";
@@ -196,7 +196,11 @@ TEST_F(PolygonConsolidationTest, GetAdjacentCandidates2) {
   previous_candidate_id = std::get<1>(candidates.at(0));
   EXPECT_EQ(previous_candidate_id, 2) << "Wrong previous candidate id";
 
-  expected_transformation = transformation2;
+  inverse_rotation = transformation2.getRotation().inverted();
+  expected_transformation =
+      Pose(-inverse_rotation.rotate(transformation2.getPosition()),
+           inverse_rotation);
+
   candidate_transformation = std::get<2>(candidates.at(0));
   EXPECT_EQ(candidate_transformation, expected_transformation)
       << "Wrong transformation";
@@ -227,7 +231,7 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners1) {
   pose_graph.addPose(polygon, transformation);
 
   unsigned int result_id = 0;
-  Pose result_transformation = Pose(Position(5.0, 0.0, 0.0), Rotation());
+  Pose expected_transformation = Pose(Position(-5.0, 0.0, 0), Rotation());
 
   std::vector<PoseGraphPose> pose_graph_poses = pose_graph.getPoseGraphPoses();
 
@@ -237,7 +241,7 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners1) {
   auto test_transformation = std::get<1>(intersected_polygon_owners.front());
 
   EXPECT_EQ(test_id, result_id);
-  EXPECT_EQ(test_transformation, result_transformation);
+  EXPECT_EQ(test_transformation, expected_transformation);
 
   intersected_polygon_owners =
       PolygonConsolidation::getIntersectedPolygonOwners(0, pose_graph_poses);
@@ -245,9 +249,9 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners1) {
   test_transformation = std::get<1>(intersected_polygon_owners.front());
 
   result_id = 1;
-  result_transformation = Pose(Position(-5.0, 0.0, 0.0), Rotation());
+  expected_transformation = transformation;
   EXPECT_EQ(test_id, result_id);
-  EXPECT_EQ(test_transformation, result_transformation);
+  EXPECT_EQ(test_transformation, expected_transformation);
 }
 
 TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners2) {
@@ -290,16 +294,13 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners2) {
 
   unsigned int result_id = 1;
 
-  auto inverse_rotation = transformation1.getRotation().inverted();
-  Pose result_transformation(
-      -inverse_rotation.rotate(transformation1.getPosition()),
-      inverse_rotation);
+  Pose expected_transformation = transformation1;
 
   auto test_id = std::get<0>(intersected_polygon_owners.front());
   auto test_transformation = std::get<1>(intersected_polygon_owners.front());
 
   EXPECT_EQ(test_id, result_id);
-  EXPECT_EQ(test_transformation, result_transformation);
+  EXPECT_EQ(test_transformation, expected_transformation);
 
   intersected_polygon_owners.pop();
 
@@ -308,11 +309,7 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners2) {
 
   result_id = 2;
 
-  Pose stacked_transformation = transformation2 * transformation1;
-  inverse_rotation = stacked_transformation.getRotation().inverted();
-  result_transformation =
-      Pose(-inverse_rotation.rotate(stacked_transformation.getPosition()),
-           inverse_rotation);
+  expected_transformation = transformation2 * transformation1;
 
   test_id = std::get<0>(intersected_polygon_owners.front());
   test_transformation = std::get<1>(intersected_polygon_owners.front());
@@ -320,16 +317,16 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners2) {
   EXPECT_EQ(test_id, result_id);
   // EXPECT_EQ(test_transformation, result_transformation);
   EXPECT_NEAR(test_transformation.getPosition().x(),
-              result_transformation.getPosition().x(), 1.0e-6)
+              expected_transformation.getPosition().x(), 1.0e-6)
       << "Wrong transformation!";
   EXPECT_NEAR(test_transformation.getPosition().y(),
-              result_transformation.getPosition().y(), 1.0e-6)
+              expected_transformation.getPosition().y(), 1.0e-6)
       << "Wrong transformation!";
   EXPECT_NEAR(test_transformation.getPosition().z(),
-              result_transformation.getPosition().z(), 1.0e-6)
+              expected_transformation.getPosition().z(), 1.0e-6)
       << "Wrong transformation!";
   ASSERT_TRUE(test_transformation.getRotation().isNear(
-      result_transformation.getRotation(), 1.0e-6))
+      expected_transformation.getRotation(), 1.0e-6))
       << "Wrong transformation!";
 
   intersected_polygon_owners =
@@ -340,16 +337,13 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners2) {
 
   result_id = 2;
 
-  inverse_rotation = transformation2.getRotation().inverted();
-  result_transformation =
-      Pose(-inverse_rotation.rotate(transformation2.getPosition()),
-           inverse_rotation);
+  expected_transformation = transformation2;
 
   test_id = std::get<0>(intersected_polygon_owners.front());
   test_transformation = std::get<1>(intersected_polygon_owners.front());
 
   EXPECT_EQ(test_id, result_id);
-  EXPECT_EQ(test_transformation, result_transformation);
+  EXPECT_EQ(test_transformation, expected_transformation);
 
   intersected_polygon_owners.pop();
 
@@ -358,13 +352,16 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners2) {
 
   result_id = 0;
 
-  result_transformation = transformation1;
+  auto inverse_rotation = transformation1.getRotation().inverted();
+  expected_transformation =
+      Pose(-inverse_rotation.rotate(transformation1.getPosition()),
+           inverse_rotation);
 
   test_id = std::get<0>(intersected_polygon_owners.front());
   test_transformation = std::get<1>(intersected_polygon_owners.front());
 
   EXPECT_EQ(test_id, result_id);
-  EXPECT_EQ(test_transformation, result_transformation);
+  EXPECT_EQ(test_transformation, expected_transformation);
 
   intersected_polygon_owners =
       PolygonConsolidation::getIntersectedPolygonOwners(2, pose_graph_poses);
@@ -374,13 +371,17 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners2) {
 
   result_id = 1;
 
-  result_transformation = transformation2;
+  expected_transformation = transformation2;
+  inverse_rotation = transformation2.getRotation().inverted();
+  expected_transformation =
+      Pose(-inverse_rotation.rotate(transformation2.getPosition()),
+           inverse_rotation);
 
   test_id = std::get<0>(intersected_polygon_owners.front());
   test_transformation = std::get<1>(intersected_polygon_owners.front());
 
   EXPECT_EQ(test_id, result_id);
-  EXPECT_EQ(test_transformation, result_transformation);
+  EXPECT_EQ(test_transformation, expected_transformation);
 
   intersected_polygon_owners.pop();
 
@@ -389,11 +390,115 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners2) {
 
   result_id = 0;
 
-  result_transformation = transformation1 * transformation2;
+  expected_transformation = transformation1 * transformation2;
+  inverse_rotation = expected_transformation.getRotation().inverted();
+  expected_transformation =
+      Pose(-inverse_rotation.rotate(expected_transformation.getPosition()),
+           inverse_rotation);
 
   test_id = std::get<0>(intersected_polygon_owners.front());
   test_transformation = std::get<1>(intersected_polygon_owners.front());
 
   EXPECT_EQ(test_id, result_id);
-  EXPECT_EQ(test_transformation, result_transformation);
+  EXPECT_EQ(test_transformation, expected_transformation);
+}
+
+TEST_F(PolygonConsolidationTest, GetPolygonUnion1) {
+  PoseGraph pose_graph;
+
+  std::vector<PolygonPoint> points1;
+  points1.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+  points1.emplace_back(0.0, 10.0, PointType::OBSTACLE);
+  points1.emplace_back(10.0, 10.0, PointType::OBSTACLE);
+  points1.emplace_back(10.0, -10.0, PointType::OBSTACLE);
+  points1.emplace_back(0.0, -10.0, PointType::OBSTACLE);
+  points1.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+
+  Polygon polygon1(points1);
+
+  pose_graph.addPose(polygon1, Pose());
+
+  kindr::AngleAxisD angleAxis2(1.5708 /*90deg*/, Eigen::Vector3d::UnitZ());
+  Pose transformation(Position(5.0, 5.0, 0), Rotation(angleAxis2));
+
+  std::vector<PolygonPoint> points2;
+  points2.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+  points2.emplace_back(0.0, 2.5, PointType::OBSTACLE);
+  points2.emplace_back(10.0, 2.5, PointType::OBSTACLE);
+  points2.emplace_back(10.0, -2.5, PointType::OBSTACLE);
+  points2.emplace_back(0.0, -2.5, PointType::OBSTACLE);
+  points2.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+
+  Polygon polygon2(points2);
+
+  pose_graph.addPose(polygon2, transformation);
+
+  unsigned int reference_id = 0;
+  auto polygon_union = PolygonConsolidation::getPolygonUnion(
+      reference_id, pose_graph.getPoseGraphPoses());
+
+  auto polygon_points = polygon_union.getPoints();
+
+  EXPECT_EQ(polygon_points[0], PolygonPoint(2.49998, 10.0, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[1], PolygonPoint(2.49998, 15.0, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[2], PolygonPoint(7.49998, 15.0, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[3], PolygonPoint(7.49998, 10.0, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[4], PolygonPoint(10.0, 10.0, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[5], PolygonPoint(10.0, -10.0, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[6], PolygonPoint(0.0, -10.0, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[7], PolygonPoint(0.0, 0.0, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[8], PolygonPoint(0.0, 10.0, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[9], PolygonPoint(2.49998, 10.0, PointType::UNKNOWN));
+
+  reference_id = 1;
+  polygon_union = PolygonConsolidation::getPolygonUnion(
+      reference_id, pose_graph.getPoseGraphPoses());
+
+  polygon_points = polygon_union.getPoints();
+
+  EXPECT_EQ(polygon_points[0], PolygonPoint(5.00001, 2.5, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[1], PolygonPoint(10, 2.5, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[2], PolygonPoint(10, -2.5, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[3], PolygonPoint(4.99999, -2.5, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[4],
+            PolygonPoint(4.99998, -5.00002, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[5],
+            PolygonPoint(-15.0, -4.99994, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[6],
+            PolygonPoint(-15.0, 5.00006, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[7],
+            PolygonPoint(-4.99998, 5.00002, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[8],
+            PolygonPoint(5.00002, 4.99998, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[9], PolygonPoint(5.00001, 2.5, PointType::UNKNOWN));
+}
+
+TEST_F(PolygonConsolidationTest, GetPolygonUnion2) {
+  PoseGraph pose_graph;
+
+  std::vector<PolygonPoint> points1;
+  points1.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+  points1.emplace_back(0.0, 10.0, PointType::OBSTACLE);
+  points1.emplace_back(10.0, 10.0, PointType::OBSTACLE);
+  points1.emplace_back(10.0, -10.0, PointType::OBSTACLE);
+  points1.emplace_back(0.0, -10.0, PointType::OBSTACLE);
+  points1.emplace_back(0.0, 0.0, PointType::OBSTACLE);
+
+  Polygon polygon1(points1);
+
+  pose_graph.addPose(polygon1, Pose());
+  pose_graph.addPose(polygon1, Pose());
+
+  unsigned int reference_id = 0;
+  auto polygon_union = PolygonConsolidation::getPolygonUnion(
+      reference_id, pose_graph.getPoseGraphPoses());
+
+  auto polygon_points = polygon_union.getPoints();
+
+  EXPECT_EQ(polygon_points[0], PolygonPoint(0, 10, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[1], PolygonPoint(10, 10, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[2], PolygonPoint(10, -10, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[3], PolygonPoint(0, -10, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[4], PolygonPoint(0, 0, PointType::UNKNOWN));
+  EXPECT_EQ(polygon_points[5], PolygonPoint(0, 10, PointType::UNKNOWN));
 }

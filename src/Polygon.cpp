@@ -86,7 +86,8 @@ Polygon Polygon::buildUnion(const Polygon& polygon) const {
   return getPolygonFromBoostPolygon(output_polygon);
 }
 
-std::vector<Point> Polygon::getIntersectionPoints(const Polygon& polygon) const {
+std::vector<Point> Polygon::getIntersectionPoints(
+    const Polygon& polygon) const {
   std::vector<BoostPoint> intersection_boost_points;
 
   boost::geometry::intersection(polygon_, polygon.polygon_,
@@ -178,10 +179,20 @@ void Polygon::print() const {
   }
 }
 
+std::ostream& operator<<(std::ostream& os, const Polygon& polygon) {
+  os << "Polygon: " << std::endl;
+
+  for (const auto& point : polygon.points_) {
+    os << "x: " << point.getX() << ", y: " << point.getY() << std::endl;
+  }
+
+  return os;
+}
+
 void Polygon::plot(const std::string& filename) const {
   // Declare a stream and an SVG mapper
   std::ofstream svg(filename);
-  boost::geometry::svg_mapper<BoostPoint> mapper(svg, 800, 500);
+  boost::geometry::svg_mapper<BoostPoint> mapper(svg, 500, 500);
 
   // Add geometries such that all these geometries fit on the map
   mapper.add(polygon_);

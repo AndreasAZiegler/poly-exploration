@@ -3,17 +3,70 @@
 
 #include "PolygonConsolidation.h"
 #include <glog/logging.h>
-#include <tuple>
 #include <queue>
-#include <utility>
-#include <vector>
 #include <set>
 #include <stack>
+#include <tuple>
+#include <utility>
+#include <vector>
+
+Polygon PolygonConsolidation::getPolygonUnion(
+    const unsigned int pose_graph_pose_id,
+    const std::vector<PoseGraphPose>& pose_graph_poses) {
+  CHECK(0 <= pose_graph_pose_id) << "Id has to be non negativ!";
+  CHECK(pose_graph_poses.size() > pose_graph_pose_id)
+      << "Id has to be within range!";
+  // std::queue<std::tuple<unsigned int, Pose>>
+  auto intersected_polygon_owners =
+      PolygonConsolidation::getIntersectedPolygonOwners(pose_graph_pose_id,
+                                                        pose_graph_poses);
+
+  LOG(INFO) << "Reference id (" << pose_graph_pose_id << ") has "
+            << intersected_polygon_owners.size() << " intersecting polygons.";
+
+  auto polygon_union = pose_graph_poses[pose_graph_pose_id].getPolygon();
+  LOG(INFO) << "Reference polygon:" << std::endl << polygon_union;
+  polygon_union.plot("plot-start.svg");
+
+  while (!intersected_polygon_owners.empty()) {
+    auto intersected_polygon_owner = intersected_polygon_owners.front();
+
+    auto candidate_id = std::get<0>(intersected_polygon_owner);
+    auto candidate_to_reference_transformation =
+        std::get<1>(intersected_polygon_owner);
+
+    LOG(INFO) << "candidate id: " << candidate_id;
+
+    auto candidate_polygon_origin_frame =
+        pose_graph_poses[candidate_id].getPolygon();
+    auto candidate_polygon_reference_frame =
+        candidate_polygon_origin_frame.transformPolygon(candidate_to_reference_transformation);
+
+    polygon_union.plot("plot-" + std::to_string(candidate_id) + "-before.svg");
+    LOG(INFO) << "Number of points BEFORE union: "
+              << polygon_union.getPoints().size();
+    LOG(INFO) << "polygon_union BEFORE:" << std::endl << polygon_union;
+    LOG(INFO) << "candidate polygon in the candidate frame:" << std::endl << candidate_polygon_origin_frame;
+    LOG(INFO) << "candidate polygon in the reference frame:" << std::endl << candidate_polygon_reference_frame;
+
+    polygon_union = polygon_union.buildUnion(candidate_polygon_reference_frame);
+    LOG(INFO) << "polygon_union AFTER:" << std::endl << polygon_union;
+
+    polygon_union.plot("plot-" + std::to_string(candidate_id) + "-after.svg");
+    LOG(INFO) << "Number of points AFTER union: "
+              << polygon_union.getPoints().size();
+
+    intersected_polygon_owners.pop();
+  }
+  polygon_union.plot("plot-end.svg");
+
+  return polygon_union;
+}
 
 std::queue<std::tuple<unsigned int, Pose>>
 PolygonConsolidation::getIntersectedPolygonOwners(
-    unsigned int pose_graph_pose_id,
-    std::vector<PoseGraphPose>& pose_graph_poses) {
+    const unsigned int pose_graph_pose_id,
+    const std::vector<PoseGraphPose>& pose_graph_poses) {
   CHECK(0 <= pose_graph_pose_id) << "Id has to be non negativ!";
   CHECK(pose_graph_poses.size() > pose_graph_pose_id)
       << "Id has to be within range!";
@@ -25,8 +78,8 @@ PolygonConsolidation::getIntersectedPolygonOwners(
   checked_candidates_id.insert(pose_graph_pose_id);
 
   // Get current pose and its polygon
-  PoseGraphPose& current_pose_graph_pose = pose_graph_poses[pose_graph_pose_id];
-  Polygon current_polygon = current_pose_graph_pose.getPolygon();
+  auto current_pose_graph_pose = pose_graph_poses[pose_graph_pose_id];
+  auto current_polygon = current_pose_graph_pose.getPolygon();
 
   // Add adjacent poses and the corresponding transformation of the current pose
   // This initializes the candidates stack
@@ -48,16 +101,9 @@ PolygonConsolidation::getIntersectedPolygonOwners(
     // Get current candidate
     auto current_candidate = candidates.top();
     auto current_candidate_id = std::get<0>(current_candidate);
-    auto current_previous_candidate_id = std::get<1>(current_candidate);
     auto current_candidate_to_referenct_transformation =
         std::get<2>(current_candidate);
     candidates.pop();
-
-    /*
-    LOG(INFO) << "Transformation from candidate (" << current_candidate_id
-              << ") to previous candidate (" << current_previous_candidate_id
-              << "): " << current_transformation;
-    */
 
     // Transform candidate polygon into current pose's frame
     auto other_polygon = pose_graph_poses[current_candidate_id].getPolygon();
@@ -81,22 +127,22 @@ PolygonConsolidation::getIntersectedPolygonOwners(
         LOG(INFO) << "Transformation calculations: candidate ("
                   << std::get<0>(additional_candidate) << ") with parent ("
                   << std::get<1>(additional_candidate) << ")";
-        LOG(INFO) << "transformation from parent ("
-                  << std::get<1>(additional_candidate) << ") to reference ("
-                  << pose_graph_pose_id << "): " << std::endl
+        LOG(INFO) << "transformation from reference (" << pose_graph_pose_id
+                  << ") to parent (" << std::get<1>(additional_candidate)
+                  << "):" << std::endl
                   << current_candidate_to_referenct_transformation;
-        LOG(INFO) << "transformation from candidate ("
-                  << std::get<0>(additional_candidate) << ") to parent ("
-                  << std::get<1>(additional_candidate) << "): " << std::endl
+        LOG(INFO) << "transformation from parent ("
+                  << std::get<1>(additional_candidate) << ") to candidate ("
+                  << std::get<0>(additional_candidate) << "):" << std::endl
                   << std::get<3>(additional_candidate);
-        LOG(INFO) << "transformation from candidate ("
-                  << std::get<0>(additional_candidate) << ")  to reference ("
-                  << pose_graph_pose_id << ") : " << std::endl
+        LOG(INFO) << "transformation from reference (" << pose_graph_pose_id
+                  << ") to candidate (" << std::get<0>(additional_candidate)
+                  << "):" << std::endl
                   << std::get<2>(additional_candidate);
 
         LOG(INFO) << "Added candidate (" << std::get<0>(additional_candidate)
                   << ") with parent (" << std::get<1>(additional_candidate)
-                  << ") with transformation to reference ("
+                  << ") with transformation from reference ("
                   << pose_graph_pose_id << "): " << std::endl
                   << std::get<2>(additional_candidate);
         candidates.emplace(std::make_tuple(
@@ -108,14 +154,14 @@ PolygonConsolidation::getIntersectedPolygonOwners(
     }
   }
 
-  return std::move(intersected_polygon_owners);
+  return intersected_polygon_owners;
 }
 
 std::vector<std::tuple<unsigned int, unsigned int, Pose, Pose>>
 PolygonConsolidation::addAdjacentCandidates(
-    unsigned int current_candidate_id, Pose& current_transformation,
+    const unsigned int current_candidate_id, const Pose& current_transformation,
     std::set<unsigned int>& checked_candidates_id,
-    std::vector<PoseGraphPose>& pose_graph_poses) {
+    const std::vector<PoseGraphPose>& pose_graph_poses) {
   CHECK(0 <= current_candidate_id) << "Id has to be non negativ!";
   CHECK(pose_graph_poses.size() > current_candidate_id)
       << "Id has to be within range!";
@@ -127,17 +173,17 @@ PolygonConsolidation::addAdjacentCandidates(
        pose_graph_poses[current_candidate_id].getAdjacentPosesId()) {
     // Only add candidate if it is/was not yet a candidate
     if (0 == checked_candidates_id.count(id)) {
-      auto candidate_to_parent_transformation =
-          pose_graph_poses[id].getAdjacentPoses()[current_candidate_id];
-      auto candidate_to_reference_transformation =
-          candidate_to_parent_transformation * current_transformation;
+      auto parent_to_candidate_transformation =
+          pose_graph_poses[current_candidate_id].getAdjacentPoses()[id];
+      auto reference_to_candidate_transformation =
+          current_transformation * parent_to_candidate_transformation;
 
       candidates.emplace_back(std::make_tuple(
-          id, current_candidate_id, candidate_to_reference_transformation,
-          candidate_to_parent_transformation));
+          id, current_candidate_id, reference_to_candidate_transformation,
+          parent_to_candidate_transformation));
       checked_candidates_id.insert(id);
     }
   }
 
-  return std::move(candidates);
+  return candidates;
 }

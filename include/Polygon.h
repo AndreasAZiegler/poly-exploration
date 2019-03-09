@@ -46,6 +46,8 @@ class Polygon {
 
   void print() const;
 
+  friend std::ostream& operator<<(std::ostream& os, const Polygon& polygon);
+
   void plot(const std::string& filename) const;
 
  private:

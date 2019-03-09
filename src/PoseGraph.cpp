@@ -2,13 +2,13 @@
  */
 
 #include "PoseGraph.h"
-#include "PolygonConsolidation.h"
 #include <glog/logging.h>
 #include <memory>
 #include <utility>
 #include <vector>
+#include "PolygonConsolidation.h"
 
-PoseGraph::PoseGraph() : currentPoseGraphPoseId_(0) {}
+PoseGraph::PoseGraph() : currentPoseGraphPoseId_{0} {}
 
 void PoseGraph::addPose(const Polygon& polygon, const Pose transformation) {
   PoseGraphPose pose_graph_pose(polygon, currentPoseGraphPoseId_);
@@ -44,15 +44,14 @@ void PoseGraph::addPose(const Polygon& polygon, const Pose transformation) {
               << inverted_transformation;
   }
 
-  // consolidatePolygon(currentPoseGraphPoseId_);
+  consolidatePolygon(currentPoseGraphPoseId_);
 
   currentPoseGraphPoseId_++;
 }
 
 void PoseGraph::consolidatePolygon(const unsigned int pose_graph_pose_id) {
-  auto intersected_polygon_owners =
-      PolygonConsolidation::getIntersectedPolygonOwners(pose_graph_pose_id,
-                                                        poseGraphPoses_);
+  auto polygon_union = PolygonConsolidation::getPolygonUnion(pose_graph_pose_id,
+                                                             poseGraphPoses_);
 }
 
 void PoseGraph::connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,

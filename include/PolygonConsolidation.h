@@ -12,14 +12,18 @@ class PolygonConsolidation {
  public:
   PolygonConsolidation() = default;
 
+  static Polygon getPolygonUnion(
+      const unsigned int pose_graph_pose_id,
+      const std::vector<PoseGraphPose>& pose_graph_poses);
+
   static std::queue<std::tuple<unsigned int, Pose>> getIntersectedPolygonOwners(
-      unsigned int pose_graph_pose_id,
-      std::vector<PoseGraphPose>& pose_graph_poses);
+      const unsigned int pose_graph_pose_id,
+      const std::vector<PoseGraphPose>& pose_graph_poses);
 
   static std::vector<std::tuple<unsigned int, unsigned int, Pose, Pose>>
-  addAdjacentCandidates(unsigned int current_candidate_id,
-                        Pose& current_transformation,
+  addAdjacentCandidates(const unsigned int current_candidate_id,
+                        const Pose& current_transformation,
                         std::set<unsigned int>& checked_candidates_id,
-                        std::vector<PoseGraphPose>& pose_graph_poses);
+                        const std::vector<PoseGraphPose>& pose_graph_poses);
 }; /* -----  end of class PolygonConsolidation  ----- */
 
