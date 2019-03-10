@@ -10,16 +10,16 @@
 #include <utility>
 #include <vector>
 
-Polygon PolygonConsolidation::getPolygonUnion(
+std::tuple<Polygon, std::vector<std::tuple<unsigned int, Pose>>>
+PolygonConsolidation::getPolygonUnion(
     const unsigned int pose_graph_pose_id,
-    const std::vector<PoseGraphPose>& pose_graph_poses) {
+    const std::vector<PoseGraphPose>& pose_graph_poses,
+    std::queue<std::tuple<unsigned int, Pose>> intersected_polygon_owners) {
   CHECK(0 <= pose_graph_pose_id) << "Id has to be non negativ!";
   CHECK(pose_graph_poses.size() > pose_graph_pose_id)
       << "Id has to be within range!";
-  // std::queue<std::tuple<unsigned int, Pose>>
-  auto intersected_polygon_owners =
-      PolygonConsolidation::getIntersectedPolygonOwners(pose_graph_pose_id,
-                                                        pose_graph_poses);
+
+  std::vector<std::tuple<unsigned int, Pose>> intersected_polygon_owners_vector;
 
   LOG(INFO) << "Reference id (" << pose_graph_pose_id << ") has "
             << intersected_polygon_owners.size() << " intersecting polygons.";
@@ -30,6 +30,7 @@ Polygon PolygonConsolidation::getPolygonUnion(
 
   while (!intersected_polygon_owners.empty()) {
     auto intersected_polygon_owner = intersected_polygon_owners.front();
+    intersected_polygon_owners_vector.emplace_back(intersected_polygon_owner);
 
     auto candidate_id = std::get<0>(intersected_polygon_owner);
     auto candidate_to_reference_transformation =
@@ -40,14 +41,17 @@ Polygon PolygonConsolidation::getPolygonUnion(
     auto candidate_polygon_origin_frame =
         pose_graph_poses[candidate_id].getPolygon();
     auto candidate_polygon_reference_frame =
-        candidate_polygon_origin_frame.transformPolygon(candidate_to_reference_transformation);
+        candidate_polygon_origin_frame.transformPolygon(
+            candidate_to_reference_transformation);
 
     polygon_union.plot("plot-" + std::to_string(candidate_id) + "-before.svg");
     LOG(INFO) << "Number of points BEFORE union: "
               << polygon_union.getPoints().size();
     LOG(INFO) << "polygon_union BEFORE:" << std::endl << polygon_union;
-    LOG(INFO) << "candidate polygon in the candidate frame:" << std::endl << candidate_polygon_origin_frame;
-    LOG(INFO) << "candidate polygon in the reference frame:" << std::endl << candidate_polygon_reference_frame;
+    LOG(INFO) << "candidate polygon in the candidate frame:" << std::endl
+              << candidate_polygon_origin_frame;
+    LOG(INFO) << "candidate polygon in the reference frame:" << std::endl
+              << candidate_polygon_reference_frame;
 
     polygon_union = polygon_union.buildUnion(candidate_polygon_reference_frame);
     LOG(INFO) << "polygon_union AFTER:" << std::endl << polygon_union;
@@ -60,7 +64,7 @@ Polygon PolygonConsolidation::getPolygonUnion(
   }
   polygon_union.plot("plot-end.svg");
 
-  return polygon_union;
+  return std::make_tuple(polygon_union, intersected_polygon_owners_vector);
 }
 
 std::queue<std::tuple<unsigned int, Pose>>

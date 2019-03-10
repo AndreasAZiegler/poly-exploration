@@ -50,8 +50,17 @@ void PoseGraph::addPose(const Polygon& polygon, const Pose transformation) {
 }
 
 void PoseGraph::consolidatePolygon(const unsigned int pose_graph_pose_id) {
-  auto polygon_union = PolygonConsolidation::getPolygonUnion(pose_graph_pose_id,
-                                                             poseGraphPoses_);
+  auto intersected_polygon_owners =
+      PolygonConsolidation::getIntersectedPolygonOwners(pose_graph_pose_id,
+                                                        poseGraphPoses_);
+  auto[polygon_union, intersected_polygon_owners_vector] =
+      PolygonConsolidation::getPolygonUnion(pose_graph_pose_id, poseGraphPoses_,
+                                            intersected_polygon_owners);
+
+  auto polygon_union_points = polygon_union.getPoints();
+
+  for (const auto& polygon_union_point : intersected_polygon_owners_vector) {
+  }
 }
 
 void PoseGraph::connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
