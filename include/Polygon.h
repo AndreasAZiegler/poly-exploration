@@ -36,6 +36,8 @@ class Polygon {
 
   std::vector<PolygonPoint> getPoints() const;
 
+  std::vector<Point> getXYPoints() const;
+
   std::vector<EdgeType> getEdgeTypes() const;
 
   bool isPolygonFromSensorMeasurements() {

@@ -31,6 +31,16 @@ TEST_F(PolygonTest, CreatePolygonWithPoints) {
         << "Vectors points and return_points differ at index " << i;
   }
 
+  auto return_xy_points = polygon.getXYPoints();
+
+  ASSERT_EQ(points.size(), return_xy_points.size())
+      << "Vectors points and return_points are of unequal length";
+
+  for (unsigned int i = 0; i < return_xy_points.size(); ++i) {
+    EXPECT_EQ(static_cast<Point>(points[i]), return_xy_points[i])
+        << "Vectors points and return_points differ at index " << i;
+  }
+
   ASSERT_EQ(polygon.isPolygonFromSensorMeasurements(), true)
       << "Polygon is not built from sensor measurements";
 }
@@ -53,6 +63,16 @@ TEST_F(PolygonTest, CreatePolygonWithCopyConstructor) {
 
   for (unsigned int i = 0; i < return_points.size(); ++i) {
     EXPECT_EQ(points[i], return_points[i])
+        << "Vectors points and return_points differ at index " << i;
+  }
+
+  auto return_xy_points = polygon_2.getXYPoints();
+
+  ASSERT_EQ(points.size(), return_xy_points.size())
+      << "Vectors points and return_points are of unequal length";
+
+  for (unsigned int i = 0; i < return_xy_points.size(); ++i) {
+    EXPECT_EQ(static_cast<Point>(points[i]), return_xy_points[i])
         << "Vectors points and return_points differ at index " << i;
   }
 
@@ -81,6 +101,16 @@ TEST_F(PolygonTest, CreatePolygonWithCopy) {
 
   for (unsigned int i = 0; i < return_points.size(); ++i) {
     EXPECT_EQ(points[i], return_points[i])
+        << "Vectors points and return_points differ at index " << i;
+  }
+
+  auto return_xy_points = polygon_2.getXYPoints();
+
+  ASSERT_EQ(points.size(), return_xy_points.size())
+      << "Vectors points and return_points are of unequal length";
+
+  for (unsigned int i = 0; i < return_xy_points.size(); ++i) {
+    EXPECT_EQ(static_cast<Point>(points[i]), return_xy_points[i])
         << "Vectors points and return_points differ at index " << i;
   }
 
@@ -121,6 +151,16 @@ TEST_F(PolygonTest, TransformPolygonWithPoints) {
 
   for (unsigned int i = 0; i < return_points.size(); ++i) {
     EXPECT_EQ(transformed_points[i], return_points[i])
+        << "Vectors points and return_points differ at index " << i;
+  }
+
+  auto return_xy_points = transformed_polygon.getXYPoints();
+
+  ASSERT_EQ(points.size(), return_xy_points.size())
+      << "Vectors points and return_points are of unequal length";
+
+  for (unsigned int i = 0; i < return_xy_points.size(); ++i) {
+    EXPECT_EQ(static_cast<Point>(transformed_points[i]), return_xy_points[i])
         << "Vectors points and return_points differ at index " << i;
   }
 
@@ -212,6 +252,16 @@ TEST_F(PolygonTest, CreatePolygonUnion1) {
         << "Vectors points and return_points differ at index " << i;
   }
 
+  auto return_xy_points = first_polygon.getXYPoints();
+
+  ASSERT_EQ(first_polygon_points.size(), return_xy_points.size())
+      << "Vectors points and return_points are of unequal length";
+
+  for (unsigned int i = 0; i < return_xy_points.size(); ++i) {
+    EXPECT_EQ(static_cast<Point>(first_polygon_points[i]), return_xy_points[i])
+        << "Vectors points and return_points differ at index " << i;
+  }
+
   auto return_second_polygon_points = second_polygon.getPoints();
 
   ASSERT_EQ(second_polygon_points.size(), return_second_polygon_points.size())
@@ -219,6 +269,16 @@ TEST_F(PolygonTest, CreatePolygonUnion1) {
 
   for (unsigned int i = 0; i < return_second_polygon_points.size(); ++i) {
     EXPECT_EQ(second_polygon_points[i], return_second_polygon_points[i])
+        << "Vectors points and return_points differ at index " << i;
+  }
+
+  return_xy_points = second_polygon.getXYPoints();
+
+  ASSERT_EQ(second_polygon_points.size(), return_xy_points.size())
+      << "Vectors points and return_points are of unequal length";
+
+  for (unsigned int i = 0; i < return_xy_points.size(); ++i) {
+    EXPECT_EQ(static_cast<Point>(second_polygon_points[i]), return_xy_points[i])
         << "Vectors points and return_points differ at index " << i;
   }
 
@@ -401,6 +461,16 @@ TEST_F(PolygonTest, CreatePolygonUnion2) {
         << "Vectors points and return_points differ at index " << i;
   }
 
+  auto return_xy_points = first_polygon.getXYPoints();
+
+  ASSERT_EQ(first_polygon_points.size(), return_xy_points.size())
+      << "Vectors points and return_points are of unequal length";
+
+  for (unsigned int i = 0; i < return_xy_points.size(); ++i) {
+    EXPECT_EQ(static_cast<Point>(first_polygon_points[i]), return_xy_points[i])
+        << "Vectors points and return_points differ at index " << i;
+  }
+
   auto return_second_polygon_points = second_polygon.getPoints();
 
   ASSERT_EQ(second_polygon_points.size(), return_second_polygon_points.size())
@@ -408,6 +478,16 @@ TEST_F(PolygonTest, CreatePolygonUnion2) {
 
   for (unsigned int i = 0; i < return_second_polygon_points.size(); ++i) {
     EXPECT_EQ(second_polygon_points[i], return_second_polygon_points[i])
+        << "Vectors points and return_points differ at index " << i;
+  }
+
+  return_xy_points = second_polygon.getXYPoints();
+
+  ASSERT_EQ(second_polygon_points.size(), return_xy_points.size())
+      << "Vectors points and return_points are of unequal length";
+
+  for (unsigned int i = 0; i < return_xy_points.size(); ++i) {
+    EXPECT_EQ(static_cast<Point>(second_polygon_points[i]), return_xy_points[i])
         << "Vectors points and return_points differ at index " << i;
   }
 

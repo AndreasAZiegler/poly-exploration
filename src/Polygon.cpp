@@ -171,6 +171,16 @@ Polygon Polygon::getPolygonFromBoostPolygon(const BoostPolygon& polygon) const {
 
 std::vector<PolygonPoint> Polygon::getPoints() const { return points_; }
 
+std::vector<Point> Polygon::getXYPoints() const {
+  std::vector<Point> xy_points;
+
+  for (const auto& polygon_point : points_) {
+    xy_points.emplace_back(polygon_point.getX(), polygon_point.getY());
+  }
+
+  return xy_points;
+}
+
 void Polygon::print() const {
   std::cout << "Polygon: " << std::endl;
 
