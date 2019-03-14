@@ -30,14 +30,16 @@ class PolygonConsolidation {
 
   static void setAllIntersectedPolygonsToPerformUnion(
       std::vector<std::tuple<unsigned int, Pose>>& intersected_polygon_owners,
-      std::vector<PoseGraphPose>& pose_graph_poses);
+      std::vector<PoseGraphPose>* pose_graph_poses);
 
   static void setMaxRangeAndObstaclePoints(
-      std::vector<PoseGraphPose>& pose_graph_poses, Polygon& polygon_union,
+      std::vector<PoseGraphPose>* pose_graph_poses,
+      const Polygon& polygon_union,
       std::vector<std::tuple<unsigned int, Pose>>& intersected_polygon_owners);
 
   static void setFreeSpacePoints(
-      std::vector<PoseGraphPose>& pose_graph_poses, Polygon& polygon_union,
+      std::vector<PoseGraphPose>* pose_graph_poses,
+      const Polygon& polygon_union,
       std::vector<std::tuple<unsigned int, Pose>>& intersected_polygon_owners);
 }; /* -----  end of class PolygonConsolidation  ----- */
 

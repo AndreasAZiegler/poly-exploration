@@ -66,17 +66,17 @@ void PoseGraph::consolidatePolygon(const unsigned int pose_graph_pose_id) {
 
   // Set all points of intersected polygons to UNKNOWN
   PolygonConsolidation::setAllIntersectedPolygonsToPerformUnion(
-      intersected_polygon_owners_vector, poseGraphPoses_);
+      intersected_polygon_owners_vector, &poseGraphPoses_);
 
   // Set points MAX_RANGE or OBSTACLE which are contained in the
   // polygon union.
   PolygonConsolidation::setMaxRangeAndObstaclePoints(
-      poseGraphPoses_, polygon_union, intersected_polygon_owners_vector);
+      &poseGraphPoses_, polygon_union, intersected_polygon_owners_vector);
 
   // Set points which are not MAX_RANGE or OBSTACLE to FREE_SPACE. These
   // are points which were not in the unifyed polygon and therefore must
   // represent polygon point in free space
-  PolygonConsolidation::setFreeSpacePoints(poseGraphPoses_, polygon_union,
+  PolygonConsolidation::setFreeSpacePoints(&poseGraphPoses_, polygon_union,
                                            intersected_polygon_owners_vector);
 
   // Determine and set edge types of the intersected polygons

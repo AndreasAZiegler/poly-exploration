@@ -194,17 +194,17 @@ PolygonConsolidation::addAdjacentCandidates(
 
 void PolygonConsolidation::setAllIntersectedPolygonsToPerformUnion(
     std::vector<std::tuple<unsigned int, Pose>>& intersected_polygon_owners,
-    std::vector<PoseGraphPose>& pose_graph_poses) {
+    std::vector<PoseGraphPose>* pose_graph_poses) {
   // Set all points of intersected polygons to UNKNOWN
   for (const auto& intersected_polygon_owner : intersected_polygon_owners) {
     auto intersected_polygon_pose_id = std::get<0>(intersected_polygon_owner);
-    pose_graph_poses[intersected_polygon_pose_id]
+    pose_graph_poses->at(intersected_polygon_pose_id)
         .setPolygonPointsToPerformUnion();
   }
 }
 
 void PolygonConsolidation::setMaxRangeAndObstaclePoints(
-    std::vector<PoseGraphPose>& pose_graph_poses, Polygon& polygon_union,
+    std::vector<PoseGraphPose>* pose_graph_poses, const Polygon& polygon_union,
     std::vector<std::tuple<unsigned int, Pose>>& intersected_polygon_owners) {
   auto polygon_union_points = polygon_union.getPoints();
 
@@ -214,7 +214,7 @@ void PolygonConsolidation::setMaxRangeAndObstaclePoints(
       auto reference_to_candidate_transformation =
           std::get<1>(intersected_polygon_owner);
       auto intersected_polygon =
-          pose_graph_poses[intersected_polygon_pose_id].getPolygon();
+          pose_graph_poses->at(intersected_polygon_pose_id).getPolygon();
 
       auto intersected_polygon_reference_frame =
           intersected_polygon.transformPolygon(
@@ -237,15 +237,17 @@ void PolygonConsolidation::setMaxRangeAndObstaclePoints(
                     << intersected_polygon_point_reference_frame_id;
           if (intersected_polygon_point_reference_frame.getPointType() ==
               PointType::WAS_MAX_RANGE) {
-            pose_graph_poses[intersected_polygon_pose_id].setPolygonPointType(
-                intersected_polygon_point_reference_frame_id,
-                PointType::MAX_RANGE);
+            pose_graph_poses->at(intersected_polygon_pose_id)
+                .setPolygonPointType(
+                    intersected_polygon_point_reference_frame_id,
+                    PointType::MAX_RANGE);
             LOG(INFO) << "Set MAX_RANGE";
           } else if (intersected_polygon_point_reference_frame.getPointType() ==
                      PointType::WAS_OBSTACLE) {
-            pose_graph_poses[intersected_polygon_pose_id].setPolygonPointType(
-                intersected_polygon_point_reference_frame_id,
-                PointType::OBSTACLE);
+            pose_graph_poses->at(intersected_polygon_pose_id)
+                .setPolygonPointType(
+                    intersected_polygon_point_reference_frame_id,
+                    PointType::OBSTACLE);
             LOG(INFO) << "Set OBSTACLE";
           }
         }
@@ -255,12 +257,12 @@ void PolygonConsolidation::setMaxRangeAndObstaclePoints(
 }
 
 void PolygonConsolidation::setFreeSpacePoints(
-    std::vector<PoseGraphPose>& pose_graph_poses, Polygon& polygon_union,
+    std::vector<PoseGraphPose>* pose_graph_poses, const Polygon& polygon_union,
     std::vector<std::tuple<unsigned int, Pose>>& intersected_polygon_owners) {
   for (const auto& intersected_polygon_owner : intersected_polygon_owners) {
     auto intersected_polygon_pose_id = std::get<0>(intersected_polygon_owner);
     auto intersected_polygon =
-        pose_graph_poses[intersected_polygon_pose_id].getPolygon();
+        pose_graph_poses->at(intersected_polygon_pose_id).getPolygon();
 
     auto intersected_polygon_points_reference_frame =
         intersected_polygon.getPoints();
@@ -283,9 +285,9 @@ void PolygonConsolidation::setFreeSpacePoints(
             << "Point type: "
             << static_cast<int>(
                    intersected_polygon_point_reference_frame.getPointType());
-        pose_graph_poses[intersected_polygon_pose_id].setPolygonPointType(
-            intersected_polygon_point_reference_frame_id,
-            PointType::FREE_SPACE);
+        pose_graph_poses->at(intersected_polygon_pose_id)
+            .setPolygonPointType(intersected_polygon_point_reference_frame_id,
+                                 PointType::FREE_SPACE);
         LOG(INFO) << "Set FREE_SPACE";
       }
     }
