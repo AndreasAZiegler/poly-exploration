@@ -36,7 +36,7 @@ class PoseGraph {
   std::vector<PoseGraphPose> poseGraphPoses_;
 
  public:
-  FRIEND_TEST(PoseGraphTest, ConsolidatePolygon);
-  FRIEND_TEST(PoseGraphTest, GetIntersectedPolygonOwners1);
+  //FRIEND_TEST(PoseGraphTest, ConsolidatePolygon);
+  //FRIEND_TEST(PoseGraphTest, GetIntersectedPolygonOwners1);
 }; /* -----  end of class PoseGraph  ----- */
 

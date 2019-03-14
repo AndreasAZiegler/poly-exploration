@@ -323,7 +323,9 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPosesAndCheckIntersection1) {
       << "Vectors points and return_points are of unequal length";
 
   for (unsigned int i = 0; i < return_points_2.size(); ++i) {
-    EXPECT_EQ(points[i], return_points_2[i])
+    EXPECT_EQ(points[i].getX(), return_points_2[i].getX())
+        << "Vectors points and return_points differ at index " << i;
+    EXPECT_EQ(points[i].getY(), return_points_2[i].getY())
         << "Vectors points and return_points differ at index " << i;
   }
 
@@ -404,7 +406,9 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPosesAndCheckIntersection2) {
       << "Vectors points and return_points are of unequal length";
 
   for (unsigned int i = 0; i < return_points_2.size(); ++i) {
-    EXPECT_EQ(points[i], return_points_2[i])
+    EXPECT_EQ(points[i].getX(), return_points_2[i].getX())
+        << "Vectors points and return_points differ at index " << i;
+    EXPECT_EQ(points[i].getY(), return_points_2[i].getY())
         << "Vectors points and return_points differ at index " << i;
   }
 

@@ -315,7 +315,6 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners2) {
   test_transformation = std::get<1>(intersected_polygon_owners.front());
 
   EXPECT_EQ(test_id, result_id);
-  // EXPECT_EQ(test_transformation, result_transformation);
   EXPECT_NEAR(test_transformation.getPosition().x(),
               expected_transformation.getPosition().x(), 1.0e-6)
       << "Wrong transformation!";
@@ -493,6 +492,59 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion1) {
   EXPECT_EQ(polygon_points[8],
             PolygonPoint(5.00002, 4.99998, PointType::UNKNOWN));
   EXPECT_EQ(polygon_points[9], PolygonPoint(5.00001, 2.5, PointType::UNKNOWN));
+
+  polygon_points = pose_graph.getPoseGraphPose(0).getPolygon().getPoints();
+  auto polygon_edge_types =
+      pose_graph.getPoseGraphPose(0).getPolygon().getEdgeTypes();
+
+  EXPECT_EQ((polygon_points.size() - 1), polygon_edge_types.size())
+      << "Number of edge should be one less than number of points!";
+
+  for (const auto& polygon_edge_type : polygon_edge_types) {
+    EXPECT_EQ(polygon_edge_type, EdgeType::OBSTACLE)
+        << "Wrong polygon edge type";
+  }
+
+  auto first_pose_points =
+      pose_graph.getPoseGraphPose(0).getPolygon().getPoints();
+  for (const auto& polygon_point : first_pose_points) {
+    EXPECT_EQ(polygon_point.getPointType(), PointType::OBSTACLE)
+        << "Wrong point type";
+  }
+
+  auto second_pose_points =
+      pose_graph.getPoseGraphPose(1).getPolygon().getPoints();
+  EXPECT_EQ(second_pose_points[0].getPointType(), PointType::FREE_SPACE)
+      << "Wrong point type";
+  EXPECT_EQ(second_pose_points[1].getPointType(), PointType::FREE_SPACE)
+      << "Wrong point type";
+  EXPECT_EQ(second_pose_points[2].getPointType(), PointType::OBSTACLE)
+      << "Wrong point type";
+  EXPECT_EQ(second_pose_points[3].getPointType(), PointType::OBSTACLE)
+      << "Wrong point type";
+  EXPECT_EQ(second_pose_points[4].getPointType(), PointType::FREE_SPACE)
+      << "Wrong point type";
+
+  polygon_points = pose_graph.getPoseGraphPose(0).getPolygon().getPoints();
+  polygon_edge_types =
+      pose_graph.getPoseGraphPose(1).getPolygon().getEdgeTypes();
+
+  EXPECT_EQ((polygon_points.size() - 1), polygon_edge_types.size())
+      << "Number of edge should be one less than number of points!";
+
+  std::cout << "polygon_edge_types.size(): " << polygon_edge_types.size()
+            << std::endl;
+
+  EXPECT_EQ(polygon_edge_types.at(0), EdgeType::FREE_SPACE)
+      << "Wrong polygon edge type";
+  EXPECT_EQ(polygon_edge_types.at(1), EdgeType::FREE_SPACE)
+      << "Wrong polygon edge type";
+  EXPECT_EQ(polygon_edge_types.at(2), EdgeType::OBSTACLE)
+      << "Wrong polygon edge type";
+  EXPECT_EQ(polygon_edge_types.at(3), EdgeType::FREE_SPACE)
+      << "Wrong polygon edge type";
+  EXPECT_EQ(polygon_edge_types.at(4), EdgeType::FREE_SPACE)
+      << "Wrong polygon edge type";
 }
 
 TEST_F(PolygonConsolidationTest, GetPolygonUnion2) {
@@ -555,4 +607,18 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion2) {
   EXPECT_EQ(polygon_points[3], PolygonPoint(0, -10, PointType::UNKNOWN));
   EXPECT_EQ(polygon_points[4], PolygonPoint(0, 0, PointType::UNKNOWN));
   EXPECT_EQ(polygon_points[5], PolygonPoint(0, 10, PointType::UNKNOWN));
+
+  auto first_pose_points =
+      pose_graph.getPoseGraphPose(0).getPolygon().getPoints();
+  for (const auto& polygon_point : first_pose_points) {
+    EXPECT_EQ(polygon_point.getPointType(), PointType::OBSTACLE)
+        << "Wrong point type";
+  }
+
+  auto second_pose_points =
+      pose_graph.getPoseGraphPose(1).getPolygon().getPoints();
+  for (const auto& polygon_point : second_pose_points) {
+    EXPECT_EQ(polygon_point.getPointType(), PointType::OBSTACLE)
+        << "Wrong point type";
+  }
 }

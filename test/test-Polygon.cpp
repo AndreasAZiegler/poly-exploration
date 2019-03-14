@@ -179,7 +179,7 @@ TEST_F(PolygonTest, PolygonWithEdgeTypes1) {
 
   auto edge_types = polygon.getEdgeTypes();
 
-  ASSERT_EQ(edge_types.size(), 4) << "Wrong number of edge types.";
+  ASSERT_EQ(edge_types.size(), 3) << "Wrong number of edge types.";
 
   for (const auto& edge_type : edge_types) {
     ASSERT_EQ(edge_type, EdgeType::OBSTACLE) << "Wrong edge type.";
@@ -197,7 +197,7 @@ TEST_F(PolygonTest, PolygonWithEdgeTypes2) {
 
   auto edge_types = polygon.getEdgeTypes();
 
-  ASSERT_EQ(edge_types.size(), 4) << "Wrong number of edge types.";
+  ASSERT_EQ(edge_types.size(), 3) << "Wrong number of edge types.";
 
   for (const auto& edge_type : edge_types) {
     ASSERT_EQ(edge_type, EdgeType::FRONTIER) << "Wrong edge type.";
@@ -215,12 +215,11 @@ TEST_F(PolygonTest, PolygonWithEdgeTypes3) {
 
   auto edge_types = polygon.getEdgeTypes();
 
-  ASSERT_EQ(edge_types.size(), 4) << "Wrong number of edge types.";
+  ASSERT_EQ(edge_types.size(), 3) << "Wrong number of edge types.";
 
   ASSERT_EQ(edge_types[0], EdgeType::FRONTIER) << "Wrong edge type.";
   ASSERT_EQ(edge_types[1], EdgeType::OBSTACLE) << "Wrong edge type.";
   ASSERT_EQ(edge_types[2], EdgeType::FRONTIER) << "Wrong edge type.";
-  ASSERT_EQ(edge_types[3], EdgeType::FRONTIER) << "Wrong edge type.";
 }
 
 TEST_F(PolygonTest, CreatePolygonUnion1) {

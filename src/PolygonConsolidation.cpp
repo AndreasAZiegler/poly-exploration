@@ -191,3 +191,104 @@ PolygonConsolidation::addAdjacentCandidates(
 
   return candidates;
 }
+
+void PolygonConsolidation::setAllIntersectedPolygonsToPerformUnion(
+    std::vector<std::tuple<unsigned int, Pose>>& intersected_polygon_owners,
+    std::vector<PoseGraphPose>& pose_graph_poses) {
+  // Set all points of intersected polygons to UNKNOWN
+  for (const auto& intersected_polygon_owner : intersected_polygon_owners) {
+    auto intersected_polygon_pose_id = std::get<0>(intersected_polygon_owner);
+    pose_graph_poses[intersected_polygon_pose_id]
+        .setPolygonPointsToPerformUnion();
+  }
+}
+
+void PolygonConsolidation::setMaxRangeAndObstaclePoints(
+    std::vector<PoseGraphPose>& pose_graph_poses, Polygon& polygon_union,
+    std::vector<std::tuple<unsigned int, Pose>>& intersected_polygon_owners) {
+  auto polygon_union_points = polygon_union.getPoints();
+
+  for (const auto& polygon_union_point : polygon_union_points) {
+    for (const auto& intersected_polygon_owner : intersected_polygon_owners) {
+      auto intersected_polygon_pose_id = std::get<0>(intersected_polygon_owner);
+      auto reference_to_candidate_transformation =
+          std::get<1>(intersected_polygon_owner);
+      auto intersected_polygon =
+          pose_graph_poses[intersected_polygon_pose_id].getPolygon();
+
+      auto intersected_polygon_reference_frame =
+          intersected_polygon.transformPolygon(
+              reference_to_candidate_transformation);
+
+      auto intersected_polygon_points_reference_frame =
+          intersected_polygon_reference_frame.getPoints();
+
+      for (unsigned int intersected_polygon_point_reference_frame_id = 0;
+           intersected_polygon_point_reference_frame_id <
+           intersected_polygon_points_reference_frame.size();
+           ++intersected_polygon_point_reference_frame_id) {
+        auto intersected_polygon_point_reference_frame =
+            intersected_polygon_points_reference_frame
+                [intersected_polygon_point_reference_frame_id];
+        if (static_cast<Point>(intersected_polygon_point_reference_frame) ==
+            static_cast<Point>(polygon_union_point)) {
+          LOG(INFO) << "Pose id: " << intersected_polygon_pose_id << std::endl
+                    << "Point id: "
+                    << intersected_polygon_point_reference_frame_id;
+          if (intersected_polygon_point_reference_frame.getPointType() ==
+              PointType::WAS_MAX_RANGE) {
+            pose_graph_poses[intersected_polygon_pose_id].setPolygonPointType(
+                intersected_polygon_point_reference_frame_id,
+                PointType::MAX_RANGE);
+            LOG(INFO) << "Set MAX_RANGE";
+          } else if (intersected_polygon_point_reference_frame.getPointType() ==
+                     PointType::WAS_OBSTACLE) {
+            pose_graph_poses[intersected_polygon_pose_id].setPolygonPointType(
+                intersected_polygon_point_reference_frame_id,
+                PointType::OBSTACLE);
+            LOG(INFO) << "Set OBSTACLE";
+          }
+        }
+      }
+    }
+  }
+}
+
+void PolygonConsolidation::setFreeSpacePoints(
+    std::vector<PoseGraphPose>& pose_graph_poses, Polygon& polygon_union,
+    std::vector<std::tuple<unsigned int, Pose>>& intersected_polygon_owners) {
+  for (const auto& intersected_polygon_owner : intersected_polygon_owners) {
+    auto intersected_polygon_pose_id = std::get<0>(intersected_polygon_owner);
+    auto intersected_polygon =
+        pose_graph_poses[intersected_polygon_pose_id].getPolygon();
+
+    auto intersected_polygon_points_reference_frame =
+        intersected_polygon.getPoints();
+
+    for (unsigned int intersected_polygon_point_reference_frame_id = 0;
+         intersected_polygon_point_reference_frame_id <
+         intersected_polygon_points_reference_frame.size();
+         ++intersected_polygon_point_reference_frame_id) {
+      auto intersected_polygon_point_reference_frame =
+          intersected_polygon_points_reference_frame
+              [intersected_polygon_point_reference_frame_id];
+      if ((intersected_polygon_point_reference_frame.getPointType() ==
+           PointType::WAS_MAX_RANGE) ||
+          (intersected_polygon_point_reference_frame.getPointType() ==
+           PointType::WAS_OBSTACLE)) {
+        LOG(INFO)
+            << "Pose id: " << intersected_polygon_pose_id << std::endl
+            << "Point id: " << intersected_polygon_point_reference_frame_id
+            << std::endl
+            << "Point type: "
+            << static_cast<int>(
+                   intersected_polygon_point_reference_frame.getPointType());
+        pose_graph_poses[intersected_polygon_pose_id].setPolygonPointType(
+            intersected_polygon_point_reference_frame_id,
+            PointType::FREE_SPACE);
+        LOG(INFO) << "Set FREE_SPACE";
+      }
+    }
+  }
+}
+

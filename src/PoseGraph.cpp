@@ -42,14 +42,15 @@ void PoseGraph::addPose(const Polygon& polygon, const Pose transformation) {
               << currentPoseGraphPoseId_ << ") and adjacent pose graph pose ("
               << currentPoseGraphPoseId_ - 1 << "):" << std::endl
               << inverted_transformation;
-  }
 
-  consolidatePolygon(currentPoseGraphPoseId_);
+    consolidatePolygon(currentPoseGraphPoseId_);
+  }
 
   currentPoseGraphPoseId_++;
 }
 
 void PoseGraph::consolidatePolygon(const unsigned int pose_graph_pose_id) {
+  // Get required data
   auto intersected_polygon_owners =
       PolygonConsolidation::getIntersectedPolygonOwners(pose_graph_pose_id,
                                                         poseGraphPoses_);
@@ -57,9 +58,32 @@ void PoseGraph::consolidatePolygon(const unsigned int pose_graph_pose_id) {
       PolygonConsolidation::getPolygonUnion(pose_graph_pose_id, poseGraphPoses_,
                                             intersected_polygon_owners);
 
-  auto polygon_union_points = polygon_union.getPoints();
+  // Add current pose (pose_graph_pose_id) to the intersected polygon
+  // owners as we also want to consolidate the polygon points of the
+  // current pose
+  intersected_polygon_owners_vector.emplace_back(
+      std::make_tuple(pose_graph_pose_id, Pose()));
 
-  for (const auto& polygon_union_point : intersected_polygon_owners_vector) {
+  // Set all points of intersected polygons to UNKNOWN
+  PolygonConsolidation::setAllIntersectedPolygonsToPerformUnion(
+      intersected_polygon_owners_vector, poseGraphPoses_);
+
+  // Set points MAX_RANGE or OBSTACLE which are contained in the
+  // polygon union.
+  PolygonConsolidation::setMaxRangeAndObstaclePoints(
+      poseGraphPoses_, polygon_union, intersected_polygon_owners_vector);
+
+  // Set points which are not MAX_RANGE or OBSTACLE to FREE_SPACE. These
+  // are points which were not in the unifyed polygon and therefore must
+  // represent polygon point in free space
+  PolygonConsolidation::setFreeSpacePoints(poseGraphPoses_, polygon_union,
+                                           intersected_polygon_owners_vector);
+
+  // Determine and set edge types of the intersected polygons
+  for (const auto& intersected_polygon_owner :
+       intersected_polygon_owners_vector) {
+    auto intersected_polygon_pose_id = std::get<0>(intersected_polygon_owner);
+    poseGraphPoses_[intersected_polygon_pose_id].determinePolygonEdgeTypes();
   }
 }
 

@@ -20,6 +20,12 @@ class PoseGraphPose {
 
   Polygon getPolygon() const;
 
+  void setPolygonPointsToPerformUnion();
+
+  void setPolygonPointType(unsigned int polygon_point_id, PointType point_type);
+
+  void determinePolygonEdgeTypes();
+
   std::map<unsigned int, Pose> getAdjacentPoses() const;
 
   std::vector<unsigned int> getAdjacentPosesId() const;

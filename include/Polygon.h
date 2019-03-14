@@ -24,6 +24,8 @@ class Polygon {
 
   ~Polygon() = default;
 
+  void determinePolygonEdgeTypes();
+
   Polygon buildUnion(const Polygon& polygon) const;
 
   std::vector<Point> getIntersectionPoints(const Polygon& polygon) const;
@@ -36,9 +38,13 @@ class Polygon {
 
   std::vector<PolygonPoint> getPoints() const;
 
+  void setPointType(unsigned int point_id, PointType point_type);
+
   std::vector<Point> getXYPoints() const;
 
   std::vector<EdgeType> getEdgeTypes() const;
+
+  void setPointTypesToPerformUnion();
 
   bool isPolygonFromSensorMeasurements() {
     return polygonFromSensorMeasurements;

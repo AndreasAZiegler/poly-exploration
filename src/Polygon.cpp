@@ -43,15 +43,7 @@ Polygon::Polygon(const std::vector<PolygonPoint>& points)
 
   edgeTypes_.reserve(points.size());
 
-  for (unsigned int i = 0; i < points.size(); ++i) {
-    if ((points.at(i).getPointType() == PointType::MAX_RANGE) ||
-        (points.at((i + 1) % points.size()).getPointType() ==
-         PointType::MAX_RANGE)) {
-      edgeTypes_.emplace_back(EdgeType::FRONTIER);
-    } else {
-      edgeTypes_.emplace_back(EdgeType::OBSTACLE);
-    }
-  }
+  determinePolygonEdgeTypes();
 } /* -----  end of method Polygon::Polygon (constructor)  ----- */
 
 Polygon::Polygon(const std::vector<Point>& points)
@@ -69,6 +61,24 @@ Polygon::Polygon(const std::vector<Point>& points)
 
   boost::geometry::correct(polygon_);
 } /* -----  end of method Polygon::Polygon (constructor)  ----- */
+
+void Polygon::determinePolygonEdgeTypes() {
+  edgeTypes_.clear();
+
+  for (unsigned int i = 0; i < (points_.size() - 1); ++i) {
+    if ((points_.at(i).getPointType() == PointType::MAX_RANGE) ||
+        (points_.at((i + 1) % points_.size()).getPointType() ==
+         PointType::MAX_RANGE)) {
+      edgeTypes_.emplace_back(EdgeType::FRONTIER);
+    } else if ((points_.at(i).getPointType() == PointType::FREE_SPACE) ||
+               (points_.at((i + 1) % points_.size()).getPointType() ==
+                PointType::FREE_SPACE)) {
+      edgeTypes_.emplace_back(EdgeType::FREE_SPACE);
+    } else {
+      edgeTypes_.emplace_back(EdgeType::OBSTACLE);
+    }
+  }
+}
 
 Polygon Polygon::buildUnion(const Polygon& polygon) const {
   // Boost output polygon
@@ -153,6 +163,12 @@ void Polygon::printIntersections(const Polygon& polygon) const {
   }
 }
 
+void Polygon::setPointTypesToPerformUnion() {
+  for (auto& point : points_) {
+    point.setPointTypeToPerformUnion();
+  }
+}
+
 Polygon Polygon::getPolygonFromBoostPolygon(const BoostPolygon& polygon) const {
   // Reference to the points of the input polygon
   const auto& polygon_points = polygon.outer();
@@ -179,6 +195,10 @@ std::vector<Point> Polygon::getXYPoints() const {
   }
 
   return xy_points;
+}
+
+void Polygon::setPointType(unsigned int point_id, PointType point_type) {
+  points_[point_id].setPointType(point_type);
 }
 
 void Polygon::print() const {
