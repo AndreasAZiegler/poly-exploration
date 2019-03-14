@@ -5,23 +5,37 @@
 #include <memory>
 #include <utility>
 
-PoseGraphPose::PoseGraphPose(Polygon& polygon, unsigned int pose_graph_pose_id)
+PoseGraphPose::PoseGraphPose(const Polygon& polygon,
+                             unsigned int pose_graph_pose_id)
     : id_(pose_graph_pose_id),
       polygon_(polygon) {
 } /* -----  end of method PoseGraphPose::PoseGraphPose  (constructor)  ----- */
 
 void PoseGraphPose::addAdjacentPose(unsigned int pose_graph_pose_id,
-                                    Pose& transformation) {
-  adjacentPoses_[pose_graph_pose_id] = std::move(transformation);
+                                    const Pose& transformation) {
+  adjacentPoses_[pose_graph_pose_id] = transformation;
 }
 
-Polygon& PoseGraphPose::getPolygon() { return polygon_; }
+Polygon PoseGraphPose::getPolygon() const { return polygon_; }
 
-std::map<unsigned int, Pose> PoseGraphPose::getAdjacentPoses() {
+void PoseGraphPose::setPolygonPointsToPerformUnion() {
+  polygon_.setPointTypesToPerformUnion();
+}
+
+void PoseGraphPose::setPolygonPointType(unsigned int polygon_point_id, PointType point_type) {
+  polygon_.setPointType(polygon_point_id, point_type);
+}
+
+
+void PoseGraphPose::determinePolygonEdgeTypes() {
+  polygon_.determinePolygonEdgeTypes();
+}
+
+std::map<unsigned int, Pose> PoseGraphPose::getAdjacentPoses() const {
   return adjacentPoses_;
 }
 
-std::vector<unsigned int> PoseGraphPose::getAdjacentPosesId() {
+std::vector<unsigned int> PoseGraphPose::getAdjacentPosesId() const {
   std::vector<unsigned int> adjacent_pose_graph_pose_ids;
   adjacent_pose_graph_pose_ids.reserve(adjacentPoses_.size());
 
@@ -32,4 +46,16 @@ std::vector<unsigned int> PoseGraphPose::getAdjacentPosesId() {
   return adjacent_pose_graph_pose_ids;
 }
 
-int PoseGraphPose::getId() { return id_; }
+int PoseGraphPose::getId() const { return id_; }
+
+std::ostream& operator<<(std::ostream& os,
+                         const PoseGraphPose& pose_graph_pose) {
+  os << "PoseGraphPose:" << std::endl
+     << "Id: " << pose_graph_pose.getId() << std::endl;
+
+  for (auto const & [ key, val ] : pose_graph_pose.getAdjacentPoses()) {
+    os << "Adjacent pose " << key << " transformation: " << val << std::endl;
+  }
+
+  return os;
+}

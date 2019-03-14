@@ -24,29 +24,39 @@ class Polygon {
 
   ~Polygon() = default;
 
+  void determinePolygonEdgeTypes();
+
   Polygon buildUnion(const Polygon& polygon) const;
 
-  std::vector<Point> getIntersectionPoints(const Polygon& polygon);
+  std::vector<Point> getIntersectionPoints(const Polygon& polygon) const;
 
-  bool checkForIntersections(const Polygon& polygon);
+  bool checkForIntersections(const Polygon& polygon) const;
 
-  int getNumberOfIntersections(const Polygon& polygon);
+  int getNumberOfIntersections(const Polygon& polygon) const;
 
-  Polygon transformPolygon(const Pose& transformation);
+  Polygon transformPolygon(const Pose& transformation) const;
 
-  std::vector<PolygonPoint>& getPoints();
+  std::vector<PolygonPoint> getPoints() const;
 
-  std::vector<EdgeType>& getEdgeTypes();
+  void setPointType(unsigned int point_id, PointType point_type);
+
+  std::vector<Point> getXYPoints() const;
+
+  std::vector<EdgeType> getEdgeTypes() const;
+
+  void setPointTypesToPerformUnion();
 
   bool isPolygonFromSensorMeasurements() {
     return polygonFromSensorMeasurements;
   }
 
-  void printIntersections(const Polygon& polygon);
+  void printIntersections(const Polygon& polygon) const;
 
-  void print();
+  void print() const;
 
-  void plot(const std::string& filename);
+  friend std::ostream& operator<<(std::ostream& os, const Polygon& polygon);
+
+  void plot(const std::string& filename) const;
 
  private:
   explicit Polygon(const std::vector<Point>& points);

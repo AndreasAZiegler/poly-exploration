@@ -2,11 +2,15 @@
  */
 
 #include "PoseGraph.h"
+#include <glog/logging.h>
 #include <memory>
+#include <utility>
+#include <vector>
+#include "PolygonConsolidation.h"
 
-PoseGraph::PoseGraph() : currentPoseGraphPoseId_(0) {}
+PoseGraph::PoseGraph() : currentPoseGraphPoseId_{0} {}
 
-void PoseGraph::addPose(Polygon& polygon, Pose transformation) {
+void PoseGraph::addPose(const Polygon& polygon, const Pose transformation) {
   PoseGraphPose pose_graph_pose(polygon, currentPoseGraphPoseId_);
 
   poseGraphPoses_.emplace_back(pose_graph_pose);
@@ -25,77 +29,66 @@ void PoseGraph::addPose(Polygon& polygon, Pose transformation) {
     poseGraphPoses_[currentPoseGraphPoseId_ - 1].addAdjacentPose(
         currentPoseGraphPoseId_, transformation);
 
-    /*
-    std::cout << "Pose graph pose: " << currentPoseGraphPoseId_ - 1
-              << " adjacent pose graph pose: " << currentPoseGraphPoseId_
-              << std::endl;
-
-    std::cout << "PoseGraph::addPose(): Transformation: " << transformation
-              << std::endl;
-
-    std::cout << "PoseGraph::addPose(): From Map Transformation: "
-              << std::get<1>(poseGraphPoses_[currentPoseGraphPoseId_ - 1]
-                                 .getAdjacentPoses()[currentPoseGraphPoseId_])
-              << std::endl;
-    */
+    LOG(INFO) << "Transformation between pose graph pose ("
+              << currentPoseGraphPoseId_ - 1
+              << ") and adjacent pose graph pose (" << currentPoseGraphPoseId_
+              << "):" << std::endl
+              << transformation;
 
     poseGraphPoses_.back().addAdjacentPose(currentPoseGraphPoseId_ - 1,
                                            inverted_transformation);
 
-    /*
-    std::cout << "Pose graph pose: " << currentPoseGraphPoseId_
-              << " adjacent pose graph pose: " << currentPoseGraphPoseId_ - 1
-              << std::endl;
+    LOG(INFO) << "Transformation between pose graph pose ("
+              << currentPoseGraphPoseId_ << ") and adjacent pose graph pose ("
+              << currentPoseGraphPoseId_ - 1 << "):" << std::endl
+              << inverted_transformation;
 
-    std::cout << "PoseGraph::addPose(): Inverted transformation: "
-              << inverted_transformation << std::endl;
-
-    std::cout << "PoseGraph::addPose(): From Map Inverted transformation: "
-              << std::get<1>(poseGraphPoses_.back()
-                                 .getAdjacentPoses()[currentPoseGraphPoseId_])
-              << std::endl;
-    */
+    consolidatePolygon(currentPoseGraphPoseId_);
   }
 
   currentPoseGraphPoseId_++;
 }
 
-/*
-void PoseGraph::consolidatePolygon(unsigned int pose_graph_pose_id) {
-  std::queue<unsigned int> intersected_polygon_owners;
-  std::stack<unsigned int> candidate_polygon_owners;
+void PoseGraph::consolidatePolygon(const unsigned int pose_graph_pose_id) {
+  // Get required data
+  auto intersected_polygon_owners =
+      PolygonConsolidation::getIntersectedPolygonOwners(pose_graph_pose_id,
+                                                        poseGraphPoses_);
+  auto[polygon_union, intersected_polygon_owners_vector] =
+      PolygonConsolidation::getPolygonUnion(pose_graph_pose_id, poseGraphPoses_,
+                                            intersected_polygon_owners);
 
-  PoseGraphPose& current_pose_graph_pose = poseGraphPoses_[pose_graph_pose_id];
-  Polygon& current_polygon = current_pose_graph_pose.getPolygon();
+  // Add current pose (pose_graph_pose_id) to the intersected polygon
+  // owners as we also want to consolidate the polygon points of the
+  // current pose
+  intersected_polygon_owners_vector.emplace_back(
+      std::make_tuple(pose_graph_pose_id, Pose()));
 
-  for (const auto& id :
-       poseGraphPoses_[pose_graph_pose_id].getAdjacentPosesId()) {
-    candidate_polygon_owners.emplace(id);
-  }
+  // Set all points of intersected polygons to UNKNOWN
+  PolygonConsolidation::setAllIntersectedPolygonsToPerformUnion(
+      intersected_polygon_owners_vector, &poseGraphPoses_);
 
-  auto previous_pose_graph_pose_id = pose_graph_pose_id;
-  Pose transformation;
+  // Set points MAX_RANGE or OBSTACLE which are contained in the
+  // polygon union.
+  PolygonConsolidation::setMaxRangeAndObstaclePoints(
+      &poseGraphPoses_, polygon_union, intersected_polygon_owners_vector);
 
-  while (!intersected_polygon_owners.empty()) {
-    auto current_pose_graph_pose_id = candidate_polygon_owners.top();
-    auto adjacent_poses = poseGraphPoses_[current_pose_graph_pose_id].getAdjacentPoses();
-    auto adjacent_transformation = adjacent_poses[previous_pose_graph_pose_id];
-    transformation = transformation * adjacent_transformation;
+  // Set points which are not MAX_RANGE or OBSTACLE to FREE_SPACE. These
+  // are points which were not in the unifyed polygon and therefore must
+  // represent polygon point in free space
+  PolygonConsolidation::setFreeSpacePoints(&poseGraphPoses_, polygon_union,
+                                           intersected_polygon_owners_vector);
 
-    auto other_polygon =
-        poseGraphPoses_[current_pose_graph_pose_id].getPolygon();
-    auto other_polygon_transformed = other_polygon.transformPolygon(transformation);
-
-    if (current_polygon.checkForIntersections(other_polygon)) {
-    }
-
-    previous_pose_graph_pose_id = current_pose_graph_pose_id;
+  // Determine and set edge types of the intersected polygons
+  for (const auto& intersected_polygon_owner :
+       intersected_polygon_owners_vector) {
+    auto intersected_polygon_pose_id = std::get<0>(intersected_polygon_owner);
+    poseGraphPoses_[intersected_polygon_pose_id].determinePolygonEdgeTypes();
   }
 }
-*/
 
 void PoseGraph::connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
-                                Pose transformation) {
+                                const Pose transformation) {
   auto inverse_rotation = transformation.getRotation().inverted();
   Pose inverted_transformation(
       -inverse_rotation.rotate(transformation.getPosition()), inverse_rotation);
@@ -106,26 +99,35 @@ void PoseGraph::connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
                                              inverted_transformation);
 }
 
-PoseGraphPose& PoseGraph::getPoseGraphPose(void) {
-  auto& pose_graph = poseGraphPoses_.back();
+std::vector<PoseGraphPose> PoseGraph::getPoseGraphPoses() const {
+  return std::move(poseGraphPoses_);
+}
 
+PoseGraphPose PoseGraph::getPoseGraphPose() const {
+  CHECK(!poseGraphPoses_.empty())
+      << "There should be at least one pose in the pose graph!";
   /*
+  auto pose_graph = poseGraphPoses_.back();
+
   if (!pose_graph.getAdjacentPoses().empty()) {
     std::cout << "PoseGraph::getPoseGraphPose(void): Transformation: "
               << std::get<1>(pose_graph.getAdjacentPoses()[0]) << std::endl;
   }
-  */
 
   return pose_graph;
+  */
+  return poseGraphPoses_.back();
 }
 
-PoseGraphPose& PoseGraph::getPoseGraphPose(const unsigned int id) {
+PoseGraphPose PoseGraph::getPoseGraphPose(const unsigned int id) const {
+  CHECK(poseGraphPoses_.size() > id) << "Id has to be within range!";
+  /*
   auto& pose_graph = poseGraphPoses_.at(id);
 
-  /*
   std::cout << "PoseGraph::getPoseGraphPose(void): Transformation: "
             << std::get<1>(pose_graph.getAdjacentPoses()[0]) << std::endl;
-  */
 
   return pose_graph;
+  */
+  return poseGraphPoses_.at(id);
 }

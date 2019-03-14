@@ -7,9 +7,12 @@ add_subdirectory(libs/kindr)
 # Set the compiler options
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "-g -O0 -Wall")
+set(CMAKE_CXX_FLAGS "-g -ggdb3 -O0 -Wall")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+find_package(Glog REQUIRED)
+include_directories(${GLOG_INCLUDE_DIRS})
 
 find_package(GTest)
 

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <iostream>
 #include <map>
 #include <memory>
 #include <tuple>
@@ -12,17 +13,27 @@
 
 class PoseGraphPose {
  public:
-  PoseGraphPose(Polygon& polygon, unsigned int pose_graph_pose_id);
+  PoseGraphPose(const Polygon& polygon, unsigned int pose_graph_pose_id);
 
-  void addAdjacentPose(unsigned int pose_graph_pose_id, Pose& transformation);
+  void addAdjacentPose(unsigned int pose_graph_pose_id,
+                       const Pose& transformation);
 
-  Polygon& getPolygon();
+  Polygon getPolygon() const;
 
-  std::map<unsigned int, Pose> getAdjacentPoses();
+  void setPolygonPointsToPerformUnion();
 
-  std::vector<unsigned int> getAdjacentPosesId();
+  void setPolygonPointType(unsigned int polygon_point_id, PointType point_type);
 
-  int getId();
+  void determinePolygonEdgeTypes();
+
+  std::map<unsigned int, Pose> getAdjacentPoses() const;
+
+  std::vector<unsigned int> getAdjacentPosesId() const;
+
+  int getId() const;
+
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const PoseGraphPose& pose_graph_pose);
 
  private:
   int id_;
