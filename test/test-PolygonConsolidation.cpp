@@ -532,9 +532,6 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion1) {
   EXPECT_EQ((polygon_points.size() - 1), polygon_edge_types.size())
       << "Number of edge should be one less than number of points!";
 
-  std::cout << "polygon_edge_types.size(): " << polygon_edge_types.size()
-            << std::endl;
-
   EXPECT_EQ(polygon_edge_types.at(0), EdgeType::FREE_SPACE)
       << "Wrong polygon edge type";
   EXPECT_EQ(polygon_edge_types.at(1), EdgeType::FREE_SPACE)
