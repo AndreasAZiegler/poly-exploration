@@ -34,4 +34,4 @@ jobs:
           command: curl -s https://codecov.io/bash | bash
       - run:
           name: Coveralls
-          command: coveralls --exclude libs --exclude build --exclude test --exclude /usr/include/c++ --exclude /usr/include/boost --gcov-options '\-lp'
+          command: /usr/local/bin/coveralls --exclude libs --exclude build --exclude test --exclude /usr/include/c++ --exclude /usr/include/boost --gcov-options '\-lp'
