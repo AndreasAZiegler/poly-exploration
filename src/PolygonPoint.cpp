@@ -31,3 +31,15 @@ bool operator!=(const PolygonPoint& lhs, const PolygonPoint& rhs) {
 }
 
 PointType PolygonPoint::getPointType() const { return pointType_; }
+
+void PolygonPoint::setPointType(PointType point_type) {
+  pointType_ = point_type;
+}
+
+void PolygonPoint::setPointTypeToPerformUnion() {
+  if (pointType_ == PointType::MAX_RANGE) {
+    pointType_ = PointType::WAS_MAX_RANGE;
+  } else if (pointType_ == PointType::OBSTACLE) {
+    pointType_ = PointType::WAS_OBSTACLE;
+  }
+}

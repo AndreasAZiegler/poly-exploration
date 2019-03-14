@@ -5,7 +5,7 @@
 
 #include "Point.h"
 
-enum class PointType { UNKNOWN, MAX_RANGE, OBSTACLE };
+enum class PointType { UNKNOWN, MAX_RANGE, OBSTACLE, WAS_MAX_RANGE, WAS_OBSTACLE, FREE_SPACE };
 
 class PolygonPoint : public Point {
  public:
@@ -13,15 +13,17 @@ class PolygonPoint : public Point {
 
   bool operator==(const PolygonPoint& point);
 
-  friend bool operator==(const PolygonPoint& lhs,
-                                 const PolygonPoint& rhs);
+  friend bool operator==(const PolygonPoint& lhs, const PolygonPoint& rhs);
 
   virtual bool operator!=(const PolygonPoint& point);
 
-  friend bool operator!=(const PolygonPoint& lhs,
-                         const PolygonPoint& rhs);
+  friend bool operator!=(const PolygonPoint& lhs, const PolygonPoint& rhs);
 
   PointType getPointType() const;
+
+  void setPointType(PointType point_type);
+
+  void setPointTypeToPerformUnion();
 
  private:
   PointType pointType_;

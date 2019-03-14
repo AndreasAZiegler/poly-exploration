@@ -5,14 +5,16 @@ add_executable(poly-exploration-test
   test-PolygonPoint.cpp
   test-PoseGraphPose.cpp
   test-PoseGraph.cpp
+  test-PolygonConsolidation.cpp
   ${PROJECT_SOURCE_DIR}/src/Polygon.cpp
   ${PROJECT_SOURCE_DIR}/src/Point.cpp
   ${PROJECT_SOURCE_DIR}/src/PolygonPoint.cpp
   ${PROJECT_SOURCE_DIR}/src/PoseGraphPose.cpp
   ${PROJECT_SOURCE_DIR}/src/PoseGraph.cpp
+  ${PROJECT_SOURCE_DIR}/src/PolygonConsolidation.cpp
   )
 
-target_link_libraries(poly-exploration-test gtest_main GTest::GTest GTest::Main)
+target_link_libraries(poly-exploration-test gtest_main GTest::GTest GTest::Main ${GLOG_LIBRARIES})
 
 target_compile_options(poly-exploration-test PRIVATE -fprofile-arcs -ftest-coverage)
 
@@ -24,6 +26,7 @@ gtest_add_tests(TARGET poly-exploration-test
                 test-PolygonPoint.cpp
                 test-PoseGraphPose.cpp
                 test-PoseGraph.cpp
+                test-PolygonConsolidation.cpp
 )
 
 SETUP_TARGET_FOR_COVERAGE_LCOV(NAME poly-exploration-test_coverage
