@@ -169,6 +169,10 @@ void Polygon::setPointTypesToPerformUnion() {
   }
 }
 
+bool Polygon::isPolygonFromSensorMeasurements() {
+  return polygonFromSensorMeasurements;
+}
+
 Polygon Polygon::getPolygonFromBoostPolygon(const BoostPolygon& polygon) const {
   // Reference to the points of the input polygon
   const auto& polygon_points = polygon.outer();

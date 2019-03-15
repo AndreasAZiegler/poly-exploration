@@ -46,9 +46,7 @@ class Polygon {
 
   void setPointTypesToPerformUnion();
 
-  bool isPolygonFromSensorMeasurements() {
-    return polygonFromSensorMeasurements;
-  }
+  bool isPolygonFromSensorMeasurements();
 
   void printIntersections(const Polygon& polygon) const;
 
