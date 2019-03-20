@@ -34,4 +34,4 @@ jobs:
           command: curl -s https://codecov.io/bash | bash
       - run:
           name: Coveralls
-          command: 'cd build && lcov --directory test --zerocounters && lcov --directory test --capture --output-file lcov.info && cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js'
+          command: 'cd build && make test && lcov --directory test --zerocounters && lcov --directory test --capture --output-file lcov.info && cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js'
