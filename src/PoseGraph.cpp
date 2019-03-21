@@ -10,30 +10,29 @@
 
 PoseGraph::PoseGraph() : currentPoseGraphPoseId_{0} {}
 
-void PoseGraph::addPose(const Polygon& polygon, const Pose transformation) {
-  PoseGraphPose pose_graph_pose(polygon, currentPoseGraphPoseId_);
+void PoseGraph::addPose(
+    const Pose& current_pose_to_previews_pose_transformation,
+    const Polygon& polygon) {
+  PoseGraphPose pose_graph_pose(currentPoseGraphPoseId_, polygon);
 
   poseGraphPoses_.emplace_back(pose_graph_pose);
 
-  /*
-  std::cout << "currentPoseGraphPoseId_: " << currentPoseGraphPoseId_
-            << std::endl;
-  */
-
   if (currentPoseGraphPoseId_ > 0) {
-    auto inverse_rotation = transformation.getRotation().inverted();
+    auto inverse_rotation =
+        current_pose_to_previews_pose_transformation.getRotation().inverted();
     Pose inverted_transformation(
-        -inverse_rotation.rotate(transformation.getPosition()),
+        -inverse_rotation.rotate(
+            current_pose_to_previews_pose_transformation.getPosition()),
         inverse_rotation);
 
     poseGraphPoses_[currentPoseGraphPoseId_ - 1].addAdjacentPose(
-        currentPoseGraphPoseId_, transformation);
+        currentPoseGraphPoseId_, current_pose_to_previews_pose_transformation);
 
     LOG(INFO) << "Transformation between pose graph pose ("
               << currentPoseGraphPoseId_ - 1
               << ") and adjacent pose graph pose (" << currentPoseGraphPoseId_
               << "):" << std::endl
-              << transformation;
+              << current_pose_to_previews_pose_transformation;
 
     poseGraphPoses_.back().addAdjacentPose(currentPoseGraphPoseId_ - 1,
                                            inverted_transformation);

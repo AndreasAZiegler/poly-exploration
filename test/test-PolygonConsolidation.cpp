@@ -30,11 +30,11 @@ TEST_F(PolygonConsolidationTest, GetAdjacentCandidates1) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   Pose transformation(Position(5.0, 0.0, 0), Rotation());
 
-  pose_graph.addPose(polygon, transformation);
+  pose_graph.addPose(transformation, polygon);
 
   Pose identity_transformation;
   std::set<unsigned int> checked_candidates_id;
@@ -96,17 +96,17 @@ TEST_F(PolygonConsolidationTest, GetAdjacentCandidates2) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   kindr::AngleAxisD angleAxis1(0.7853 /*45deg*/, Eigen::Vector3d::UnitZ());
   Pose transformation1(Position(5.0, 0.0, 0), Rotation(angleAxis1));
 
-  pose_graph.addPose(polygon, transformation1);
+  pose_graph.addPose(transformation1, polygon);
 
   kindr::AngleAxisD angleAxis2(-0.7853 /*45deg*/, Eigen::Vector3d::UnitZ());
   Pose transformation2(Position(5.0, 0.0, 0), Rotation(angleAxis2));
 
-  pose_graph.addPose(polygon, transformation2);
+  pose_graph.addPose(transformation2, polygon);
 
   auto pose_graph_poses = pose_graph.getPoseGraphPoses();
 
@@ -224,11 +224,11 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners1) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   Pose transformation(Position(5.0, 0.0, 0), Rotation());
 
-  pose_graph.addPose(polygon, transformation);
+  pose_graph.addPose(transformation, polygon);
 
   unsigned int result_id = 0;
   Pose expected_transformation = Pose(Position(-5.0, 0.0, 0), Rotation());
@@ -272,17 +272,17 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners2) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   kindr::AngleAxisD angleAxis1(0 /*0.7853 45deg*/, Eigen::Vector3d::UnitZ());
   Pose transformation1(Position(5.0, 5.0, 0), Rotation(angleAxis1));
 
-  pose_graph.addPose(polygon, transformation1);
+  pose_graph.addPose(transformation1, polygon);
 
   kindr::AngleAxisD angleAxis2(0 /*-0.7853 -45deg*/, Eigen::Vector3d::UnitZ());
   Pose transformation2(Position(5.0, -5.0, 0), Rotation(angleAxis2));
 
-  pose_graph.addPose(polygon, transformation2);
+  pose_graph.addPose(transformation2, polygon);
 
   std::vector<PoseGraphPose> pose_graph_poses = pose_graph.getPoseGraphPoses();
 
@@ -415,7 +415,7 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion1) {
 
   Polygon polygon1(points1);
 
-  pose_graph.addPose(polygon1, Pose());
+  pose_graph.addPose(Pose(), polygon1);
 
   kindr::AngleAxisD angleAxis2(1.5708 /*90deg*/, Eigen::Vector3d::UnitZ());
   Pose transformation(Position(5.0, 5.0, 0), Rotation(angleAxis2));
@@ -430,7 +430,7 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion1) {
 
   Polygon polygon2(points2);
 
-  pose_graph.addPose(polygon2, transformation);
+  pose_graph.addPose(transformation, polygon2);
 
   unsigned int reference_id = 0;
   auto intersected_polygon_owners =
@@ -532,9 +532,6 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion1) {
   EXPECT_EQ((polygon_points.size() - 1), polygon_edge_types.size())
       << "Number of edge should be one less than number of points!";
 
-  std::cout << "polygon_edge_types.size(): " << polygon_edge_types.size()
-            << std::endl;
-
   EXPECT_EQ(polygon_edge_types.at(0), EdgeType::FREE_SPACE)
       << "Wrong polygon edge type";
   EXPECT_EQ(polygon_edge_types.at(1), EdgeType::FREE_SPACE)
@@ -560,8 +557,8 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion2) {
 
   Polygon polygon1(points1);
 
-  pose_graph.addPose(polygon1, Pose());
-  pose_graph.addPose(polygon1, Pose());
+  pose_graph.addPose(Pose(), polygon1);
+  pose_graph.addPose(Pose(), polygon1);
 
   unsigned int reference_id = 0;
   auto intersected_polygon_owners =
