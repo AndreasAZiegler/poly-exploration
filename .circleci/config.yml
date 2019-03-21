@@ -11,7 +11,7 @@ jobs:
           command: 'apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*'
       - run:
           name: Install dependencies
-          command: 'apt-get update && apt-get install -y git curl nodejs npm cmake gcc g++ libgtest-dev libboost-all-dev libeigen3-dev lcov libgoogle-glog-dev && sudo npm install coveralls --save-dev'
+          command: 'apt-get update && apt-get install -y python-pip python-yaml git curl cmake gcc g++ libgtest-dev libboost-all-dev libeigen3-dev lcov libgoogle-glog-dev && pip install cpp-coveralls'
       - run:
           name: Install gtest
           command: 'cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo cp *.a /usr/lib'
@@ -34,4 +34,4 @@ jobs:
           command: curl -s https://codecov.io/bash | bash
       - run:
           name: Coveralls
-          command: 'cd build && make test && lcov --directory test --zerocounters && lcov --directory test --capture --output-file lcov.info && cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js'
+          command: /usr/local/bin/coveralls --exclude libs --exclude build --exclude test --exclude /usr/include/c++ --exclude /usr/include/boost --gcov-options '\-lp'
