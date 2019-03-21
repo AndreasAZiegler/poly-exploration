@@ -19,6 +19,8 @@ find_package(GTest)
 find_package(kindr) 
 include_directories(${kindr_INCLUDE_DIRS}) 
 
+include_directories(${PROJECT_SOURCE_DIR}/libs/eventpp-master/include)
+
 include(CodeCoverage)
 set(COVERAGE_LCOV_EXCLUDES '/usr/include/*')
 
