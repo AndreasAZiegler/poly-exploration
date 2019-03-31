@@ -1,12 +1,12 @@
 /* Pose graph representation
  */
 
-#include "PoseGraph.h"
+#include "poly_exploration/PoseGraph.h"
 #include <glog/logging.h>
 #include <memory>
 #include <utility>
 #include <vector>
-#include "PolygonConsolidation.h"
+#include "poly_exploration/PolygonConsolidation.h"
 
 PoseGraph::PoseGraph() : currentPoseGraphPoseId_{0} {}
 

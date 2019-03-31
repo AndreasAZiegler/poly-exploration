@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<?xml-model
+  href="http://download.ros.org/schema/package_format3.xsd"
+  schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>poly_exploration</name>
+  <version>0.1.0</version>
+  <description>poly_exploration</description>
+  <maintainer email="062.127@gmail.com">Andreas Ziegler</maintainer>
+  <license>Apache License 2.0</license> <!-- The contents of this vendor package are Apache 2.0 -->
+  <buildtool_depend>cmake</buildtool_depend>
+
+  <buildtool_export_depend>cmake</buildtool_export_depend>
+
+  <depend>glog</depend>
+  <depend>gtest</depend>
+  <depend>kindr</depend>
+  <depend>Eigen3</depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>

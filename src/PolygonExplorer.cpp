@@ -1,14 +1,22 @@
 /* Polygon explorer (main) class representation
  */
 
-#include "PolygonExplorer.h"
+#include "poly_exploration/PolygonExplorer.h"
 
 PolygonExplorer::PolygonExplorer() {} /* -----  end of method
                                          PolygonExplorer::PolygonExplorer
                                          (constructor)  ----- */
 
-void PolygonExplorer::setCallBack(std::function<void(const PoseGraph)> callback_function) {
-  callBackList_.append(callback_function);
+void PolygonExplorer::setCallBack(
+    PolygonExplorerInterface* polygon_explorer_node) {
+  callBackList_.append(
+      std::bind(&PolygonExplorerInterface::updateVisualizationCallback,
+                polygon_explorer_node, std::placeholders::_1));
+  /*
+  callBackList_.append([polygon_explorer_node](PoseGraph pose_graph) {
+    polygon_explorer_node->updateVisualizationCallback(pose_graph);
+  });
+  */
 }
 
 void PolygonExplorer::addPose(

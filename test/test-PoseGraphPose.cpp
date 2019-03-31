@@ -1,6 +1,6 @@
 #include <memory>
 #include <vector>
-#include "PoseGraphPose.h"
+#include "poly_exploration/PoseGraphPose.h"
 #include "gtest/gtest.h"
 
 namespace {

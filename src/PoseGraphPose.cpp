@@ -1,7 +1,7 @@
 /* Pose graph pose representation
  */
 
-#include "PoseGraphPose.h"
+#include "poly_exploration/PoseGraphPose.h"
 #include <memory>
 #include <utility>
 

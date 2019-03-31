@@ -1,7 +1,7 @@
 /* Helper class for the polygon consolidation
  */
 
-#include "PolygonConsolidation.h"
+#include "poly_exploration/PolygonConsolidation.h"
 #include <glog/logging.h>
 #include <queue>
 #include <set>

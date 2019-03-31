@@ -3,7 +3,7 @@
 
 #include <set>
 #include <vector>
-#include "PolygonConsolidation.h"
+#include "poly_exploration/PolygonConsolidation.h"
 #include "gtest/gtest.h"
 
 // The fixture for testing class Polygon.

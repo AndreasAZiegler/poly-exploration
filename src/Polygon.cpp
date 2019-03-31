@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include "Polygon.h"
+#include "poly_exploration/Polygon.h"
 
 std::ostream& operator<<(std::ostream& os, const EdgeType& edge_type) {
   switch (edge_type) {

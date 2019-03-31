@@ -1,5 +1,5 @@
 #include <vector>
-#include "PoseGraph.h"
+#include "poly_exploration/PoseGraph.h"
 #include "gtest/gtest.h"
 
 namespace {

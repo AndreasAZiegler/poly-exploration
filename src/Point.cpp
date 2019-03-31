@@ -1,4 +1,4 @@
-#include "Point.h"
+#include "poly_exploration/Point.h"
 
 Point::Point(double x, double y) {
   x_ = x;
