@@ -11,6 +11,7 @@ add_executable(poly_exploration-test
   test-PoseGraphPose.cpp
   test-PoseGraph.cpp
   test-PolygonConsolidation.cpp
+  test-PolygonExplorerInterface.cpp
   ${PROJECT_SOURCE_DIR}/src/PolygonExplorer.cpp
   ${PROJECT_SOURCE_DIR}/src/Polygon.cpp
   ${PROJECT_SOURCE_DIR}/src/Point.cpp
@@ -48,6 +49,7 @@ gtest_add_tests(TARGET poly_exploration-test
                 test-PoseGraphPose.cpp
                 test-PoseGraph.cpp
                 test-PolygonConsolidation.cpp
+                test-PolygonExplorerInterface.cpp
 )
 
 setup_target_for_coverage_lcov(NAME poly_exploration-test_coverage
