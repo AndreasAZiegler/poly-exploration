@@ -15,7 +15,6 @@ PolygonConsolidation::getPolygonUnion(
     const unsigned int pose_graph_pose_id,
     const std::vector<PoseGraphPose>& pose_graph_poses,
     std::queue<std::tuple<unsigned int, Pose>> intersected_polygon_owners) {
-  CHECK(0 <= pose_graph_pose_id) << "Id has to be non negativ!";
   CHECK(pose_graph_poses.size() > pose_graph_pose_id)
       << "Id has to be within range!";
 
@@ -71,7 +70,6 @@ std::queue<std::tuple<unsigned int, Pose>>
 PolygonConsolidation::getIntersectedPolygonOwners(
     const unsigned int pose_graph_pose_id,
     const std::vector<PoseGraphPose>& pose_graph_poses) {
-  CHECK(0 <= pose_graph_pose_id) << "Id has to be non negativ!";
   CHECK(pose_graph_poses.size() > pose_graph_pose_id)
       << "Id has to be within range!";
 
