@@ -26,7 +26,7 @@ class PoseGraphPose {
 
   void determinePolygonEdgeTypes();
 
-  std::map<unsigned int, Pose> getAdjacentPoses() const;
+  const std::map<unsigned int, Pose>& getAdjacentPoses() const;
 
   std::vector<unsigned int> getAdjacentPosesId() const;
 

@@ -20,6 +20,9 @@ void PoseGraph::addPose(
   if (currentPoseGraphPoseId_ > 0) {
     auto inverse_rotation =
         current_pose_to_previews_pose_transformation.getRotation().inverted();
+    if (inverse_rotation.norm() > 1.0) {
+      LOG(INFO) << "norm(inverse_rotation): " << inverse_rotation.norm();
+    }
     Pose inverted_transformation(
         -inverse_rotation.rotate(
             current_pose_to_previews_pose_transformation.getPosition()),
@@ -28,19 +31,24 @@ void PoseGraph::addPose(
     poseGraphPoses_[currentPoseGraphPoseId_ - 1].addAdjacentPose(
         currentPoseGraphPoseId_, current_pose_to_previews_pose_transformation);
 
+    auto adjacent_transformations =
+        poseGraphPoses_[currentPoseGraphPoseId_ - 1].getAdjacentPoses();
     LOG(INFO) << "Transformation between pose graph pose ("
               << currentPoseGraphPoseId_ - 1
               << ") and adjacent pose graph pose (" << currentPoseGraphPoseId_
               << "):" << std::endl
-              << current_pose_to_previews_pose_transformation;
+              << current_pose_to_previews_pose_transformation << std::endl
+              << adjacent_transformations[currentPoseGraphPoseId_];
 
     poseGraphPoses_.back().addAdjacentPose(currentPoseGraphPoseId_ - 1,
                                            inverted_transformation);
 
+    adjacent_transformations = poseGraphPoses_.back().getAdjacentPoses();
     LOG(INFO) << "Transformation between pose graph pose ("
               << currentPoseGraphPoseId_ << ") and adjacent pose graph pose ("
               << currentPoseGraphPoseId_ - 1 << "):" << std::endl
-              << inverted_transformation;
+              << inverted_transformation << std::endl
+              << adjacent_transformations[currentPoseGraphPoseId_ - 1];
 
     consolidatePolygon(currentPoseGraphPoseId_);
   }
@@ -89,6 +97,9 @@ void PoseGraph::consolidatePolygon(const unsigned int pose_graph_pose_id) {
 void PoseGraph::connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
                                 const Pose transformation) {
   auto inverse_rotation = transformation.getRotation().inverted();
+  if (inverse_rotation.norm() > 1.0) {
+    LOG(INFO) << "norm(inverse_rotation): " << inverse_rotation.norm();
+  }
   Pose inverted_transformation(
       -inverse_rotation.rotate(transformation.getPosition()), inverse_rotation);
 

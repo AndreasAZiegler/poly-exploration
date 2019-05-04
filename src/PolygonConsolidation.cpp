@@ -166,7 +166,6 @@ PolygonConsolidation::addAdjacentCandidates(
     const unsigned int current_candidate_id, const Pose& current_transformation,
     std::set<unsigned int>& checked_candidates_id,
     const std::vector<PoseGraphPose>& pose_graph_poses) {
-  CHECK(0 <= current_candidate_id) << "Id has to be non negativ!";
   CHECK(pose_graph_poses.size() > current_candidate_id)
       << "Id has to be within range!";
 
@@ -177,8 +176,9 @@ PolygonConsolidation::addAdjacentCandidates(
        pose_graph_poses[current_candidate_id].getAdjacentPosesId()) {
     // Only add candidate if it is/was not yet a candidate
     if (0 == checked_candidates_id.count(id)) {
-      auto parent_to_candidate_transformation =
-          pose_graph_poses[current_candidate_id].getAdjacentPoses()[id];
+      auto adjacent_transformations =
+          pose_graph_poses[current_candidate_id].getAdjacentPoses();
+      auto parent_to_candidate_transformation = adjacent_transformations[id];
       auto reference_to_candidate_transformation =
           current_transformation * parent_to_candidate_transformation;
 
