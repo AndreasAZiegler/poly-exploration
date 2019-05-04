@@ -31,6 +31,7 @@ Polygon::Polygon(const std::vector<PolygonPoint>& points)
   CHECK(points[0] == points.back()) << "First and last point of polygon have "
                                        "to be the same (Polygon should be "
                                        "closed)";
+  CHECK(points.size() > 2) << "Polygon needs at least three points.";
 
   for (const auto& point : points) {
     points_.emplace_back(point);
@@ -51,6 +52,7 @@ Polygon::Polygon(const std::vector<Point>& points)
   CHECK(points[0] == points.back()) << "First and last point of polygon have "
                                        "to be the same (Polygon should be "
                                        "closed)";
+  CHECK(points.size() > 2) << "Polygon needs at least three points.";
 
   for (const auto& point : points) {
     points_.emplace_back(point.getX(), point.getY(), PointType::UNKNOWN);
@@ -81,6 +83,8 @@ void Polygon::determinePolygonEdgeTypes() {
 }
 
 Polygon Polygon::buildUnion(const Polygon& polygon) const {
+  CHECK(polygon.getPoints().size() > 2)
+      << "Polygon needs at least three points.";
   // Boost output polygon
   std::vector<BoostPolygon> output_polygons;
 
@@ -170,6 +174,7 @@ void Polygon::setPointTypesToPerformUnion() {
 }
 
 Polygon Polygon::getPolygonFromBoostPolygon(const BoostPolygon& polygon) const {
+  CHECK(polygon.outer().size() > 2) << "Polygon needs at least three points.";
   // Reference to the points of the input polygon
   const auto& polygon_points = polygon.outer();
 
