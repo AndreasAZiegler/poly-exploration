@@ -31,7 +31,7 @@ void PoseGraphPose::determinePolygonEdgeTypes() {
   polygon_.determinePolygonEdgeTypes();
 }
 
-std::map<unsigned int, Pose> PoseGraphPose::getAdjacentPoses() const {
+const std::map<unsigned int, Pose>& PoseGraphPose::getAdjacentPoses() const {
   return adjacentPoses_;
 }
 
