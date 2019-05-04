@@ -4,8 +4,8 @@
 #pragma once
 
 #include <vector>
-#include "PoseGraph.h"
 #include "PolygonExplorerInterface.h"
+#include "PoseGraph.h"
 #include "eventpp/callbacklist.h"
 
 class PolygonExplorer {
@@ -15,7 +15,7 @@ class PolygonExplorer {
   void setCallBack(PolygonExplorerInterface* polygon_explorer_node);
 
   void addPose(const Pose& current_pose_to_previews_pose_transformation,
-               const Polygon& polygon);
+               const Polygon& polygon, const TimeStamp time_stamp);
 
   std::vector<PoseGraphPose> getPoseGraphPoses() const;
 
@@ -24,7 +24,7 @@ class PolygonExplorer {
  private:
   PoseGraph poseGraph_;
 
-  eventpp::CallbackList<void (PoseGraph)> callBackList_;
+  eventpp::CallbackList<void(PoseGraph, TimeStamp)> callBackList_;
 
 }; /* -----  end of class PolygonExplorer  ----- */
 

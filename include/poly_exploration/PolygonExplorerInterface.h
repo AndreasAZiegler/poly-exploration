@@ -8,7 +8,13 @@
 
 #include "poly_exploration/PoseGraph.h"
 
+struct TimeStamp {
+  int sec;
+  unsigned int nanosec;
+};
+
 class PolygonExplorerInterface {
  public:
-  virtual void updateVisualizationCallback(const PoseGraph) = 0;
+  virtual void updateVisualizationCallback(const PoseGraph pose_graph,
+                                           const TimeStamp time_stamp) = 0;
 };
