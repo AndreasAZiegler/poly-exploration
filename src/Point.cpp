@@ -23,6 +23,6 @@ bool operator!=(const Point& lhs, const Point& rhs) {
   return (fabs(lhs.x_ - rhs.x_) > 1e-4) || (fabs(lhs.y_ - rhs.y_) > 1e-4);
 }
 
-double Point::getX() const { return x_; };
+double Point::getX() const { return x_; }
 
-double Point::getY() const { return y_; };
+double Point::getY() const { return y_; }
