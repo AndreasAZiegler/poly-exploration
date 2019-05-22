@@ -3,10 +3,6 @@
 
 #include "poly_exploration/PolygonExplorer.h"
 
-PolygonExplorer::PolygonExplorer() {} /* -----  end of method
-                                         PolygonExplorer::PolygonExplorer
-                                         (constructor)  ----- */
-
 void PolygonExplorer::setCallBack(
     PolygonExplorerInterface* polygon_explorer_node) {
   callBackList_.append(std::bind(

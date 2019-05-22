@@ -10,12 +10,12 @@
 
 class PolygonExplorer {
  public:
-  PolygonExplorer();
+  PolygonExplorer() = default;
 
   void setCallBack(PolygonExplorerInterface* polygon_explorer_node);
 
   void addPose(const Pose& current_pose_to_previews_pose_transformation,
-               const Polygon& polygon, const TimeStamp time_stamp);
+               const Polygon& polygon, TimeStamp time_stamp);
 
   std::vector<PoseGraphPose> getPoseGraphPoses() const;
 
