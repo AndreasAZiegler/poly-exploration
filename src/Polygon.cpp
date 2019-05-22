@@ -173,6 +173,10 @@ void Polygon::setPointTypesToPerformUnion() {
   }
 }
 
+bool Polygon::isPolygonFromSensorMeasurements() {
+  return polygonFromSensorMeasurements;
+}
+
 Polygon Polygon::getPolygonFromBoostPolygon(const BoostPolygon& polygon) const {
   CHECK(polygon.outer().size() > 2) << "Polygon needs at least three points.";
   // Reference to the points of the input polygon
