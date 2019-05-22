@@ -16,7 +16,7 @@ void PoseGraphPose::addAdjacentPose(unsigned int pose_graph_pose_id,
   adjacentPoses_[pose_graph_pose_id] = transformation;
 }
 
-Polygon PoseGraphPose::getPolygon() const { return polygon_; }
+const Polygon& PoseGraphPose::getPolygon() const { return polygon_; }
 
 void PoseGraphPose::setPolygonPointsToPerformUnion() {
   polygon_.setPointTypesToPerformUnion();
