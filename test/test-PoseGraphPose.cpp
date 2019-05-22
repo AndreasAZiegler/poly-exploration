@@ -1,6 +1,6 @@
 #include <memory>
 #include <vector>
-#include "PoseGraphPose.h"
+#include "poly_exploration/PoseGraphPose.h"
 #include "gtest/gtest.h"
 
 namespace {
@@ -28,7 +28,7 @@ TEST_F(PoseGraphPoseTest, CreateOnePoseGraphPose) {
 
   Polygon polygon(points);
 
-  PoseGraphPose pose_graph_pose(polygon, 0);
+  PoseGraphPose pose_graph_pose(0, polygon);
 
   auto return_points = pose_graph_pose.getPolygon().getPoints();
 
@@ -70,7 +70,7 @@ TEST_F(PoseGraphPoseTest, CreateTwoPoseGraphPose) {
 
   Polygon polygon(points);
 
-  PoseGraphPose pose_graph_pose_1(polygon, 0);
+  PoseGraphPose pose_graph_pose_1(0, polygon);
 
   auto return_points_1 = pose_graph_pose_1.getPolygon().getPoints();
 
@@ -95,7 +95,7 @@ TEST_F(PoseGraphPoseTest, CreateTwoPoseGraphPose) {
   ASSERT_EQ(adjacent_poses_1.empty(), true)
       << "There should not be any adjacent pose";
 
-  PoseGraphPose pose_graph_pose_2(polygon, 1);
+  PoseGraphPose pose_graph_pose_2(1, polygon);
 
   auto return_points_2 = pose_graph_pose_2.getPolygon().getPoints();
 

@@ -25,15 +25,15 @@ int main(int argc, char **argv) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   kindr::AngleAxisD angleAxis1(0 /*0.7853 45deg*/, Eigen::Vector3d::UnitZ());
   Pose transformation1(Position(4.0, 6.0, 0), Rotation(angleAxis1));
 
-  pose_graph.addPose(polygon, transformation1);
+  pose_graph.addPose(transformation1, polygon);
 
   kindr::AngleAxisD angleAxis2(0 /*-0.7853 -45deg*/, Eigen::Vector3d::UnitZ());
   Pose transformation2(Position(4.0, -5.0, 0), Rotation(angleAxis2));
 
-  pose_graph.addPose(polygon, transformation2);
+  pose_graph.addPose(transformation2, polygon);
 }

@@ -1,6 +1,6 @@
 #include <vector>
 
-#include "Polygon.h"
+#include "poly_exploration/Polygon.h"
 #include "gtest/gtest.h"
 
 namespace {

@@ -1,7 +1,7 @@
 /* Helper class for the polygon consolidation
  */
 
-#include "PolygonConsolidation.h"
+#include "poly_exploration/PolygonConsolidation.h"
 #include <glog/logging.h>
 #include <queue>
 #include <set>
@@ -14,22 +14,21 @@ std::tuple<Polygon, std::vector<std::tuple<unsigned int, Pose>>>
 PolygonConsolidation::getPolygonUnion(
     const unsigned int pose_graph_pose_id,
     const std::vector<PoseGraphPose>& pose_graph_poses,
-    std::queue<std::tuple<unsigned int, Pose>> intersected_polygon_owners) {
-  CHECK(0 <= pose_graph_pose_id) << "Id has to be non negativ!";
+    std::queue<std::tuple<unsigned int, Pose>>* intersected_polygon_owners) {
   CHECK(pose_graph_poses.size() > pose_graph_pose_id)
       << "Id has to be within range!";
 
   std::vector<std::tuple<unsigned int, Pose>> intersected_polygon_owners_vector;
 
   LOG(INFO) << "Reference id (" << pose_graph_pose_id << ") has "
-            << intersected_polygon_owners.size() << " intersecting polygons.";
+            << intersected_polygon_owners->size() << " intersecting polygons.";
 
   auto polygon_union = pose_graph_poses[pose_graph_pose_id].getPolygon();
   LOG(INFO) << "Reference polygon:" << std::endl << polygon_union;
   polygon_union.plot("plot-start.svg");
 
-  while (!intersected_polygon_owners.empty()) {
-    auto intersected_polygon_owner = intersected_polygon_owners.front();
+  while (!intersected_polygon_owners->empty()) {
+    auto intersected_polygon_owner = intersected_polygon_owners->front();
     intersected_polygon_owners_vector.emplace_back(intersected_polygon_owner);
 
     auto candidate_id = std::get<0>(intersected_polygon_owner);
@@ -60,7 +59,7 @@ PolygonConsolidation::getPolygonUnion(
     LOG(INFO) << "Number of points AFTER union: "
               << polygon_union.getPoints().size();
 
-    intersected_polygon_owners.pop();
+    intersected_polygon_owners->pop();
   }
   polygon_union.plot("plot-end.svg");
 
@@ -71,7 +70,6 @@ std::queue<std::tuple<unsigned int, Pose>>
 PolygonConsolidation::getIntersectedPolygonOwners(
     const unsigned int pose_graph_pose_id,
     const std::vector<PoseGraphPose>& pose_graph_poses) {
-  CHECK(0 <= pose_graph_pose_id) << "Id has to be non negativ!";
   CHECK(pose_graph_poses.size() > pose_graph_pose_id)
       << "Id has to be within range!";
 
@@ -166,7 +164,6 @@ PolygonConsolidation::addAdjacentCandidates(
     const unsigned int current_candidate_id, const Pose& current_transformation,
     std::set<unsigned int>& checked_candidates_id,
     const std::vector<PoseGraphPose>& pose_graph_poses) {
-  CHECK(0 <= current_candidate_id) << "Id has to be non negativ!";
   CHECK(pose_graph_poses.size() > current_candidate_id)
       << "Id has to be within range!";
 
@@ -177,8 +174,9 @@ PolygonConsolidation::addAdjacentCandidates(
        pose_graph_poses[current_candidate_id].getAdjacentPosesId()) {
     // Only add candidate if it is/was not yet a candidate
     if (0 == checked_candidates_id.count(id)) {
-      auto parent_to_candidate_transformation =
-          pose_graph_poses[current_candidate_id].getAdjacentPoses()[id];
+      auto adjacent_transformations =
+          pose_graph_poses[current_candidate_id].getAdjacentPoses();
+      auto parent_to_candidate_transformation = adjacent_transformations[id];
       auto reference_to_candidate_transformation =
           current_transformation * parent_to_candidate_transformation;
 
@@ -257,7 +255,7 @@ void PolygonConsolidation::setMaxRangeAndObstaclePoints(
 }
 
 void PolygonConsolidation::setFreeSpacePoints(
-    std::vector<PoseGraphPose>* pose_graph_poses, const Polygon& polygon_union,
+    std::vector<PoseGraphPose>* pose_graph_poses,
     std::vector<std::tuple<unsigned int, Pose>>& intersected_polygon_owners) {
   for (const auto& intersected_polygon_owner : intersected_polygon_owners) {
     auto intersected_polygon_pose_id = std::get<0>(intersected_polygon_owner);

@@ -1,5 +1,5 @@
 #include <vector>
-#include "PoseGraph.h"
+#include "poly_exploration/PoseGraph.h"
 #include "gtest/gtest.h"
 
 namespace {
@@ -28,7 +28,7 @@ TEST_F(PoseGraphTest, CreateOnePoseGraphPose) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   auto pose_graph_pose = pose_graph.getPoseGraphPose();
   auto return_points = pose_graph_pose.getPolygon().getPoints();
@@ -73,7 +73,7 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPoses) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   auto pose_graph_pose_1 = pose_graph.getPoseGraphPose();
   auto return_points_1 = pose_graph_pose_1.getPolygon().getPoints();
@@ -101,7 +101,7 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPoses) {
 
   Pose transformation(Position(0.5, 0.5, 0), Rotation());
 
-  pose_graph.addPose(polygon, transformation);
+  pose_graph.addPose(transformation, polygon);
 
   auto pose_graph_pose_2 = pose_graph.getPoseGraphPose();
   auto return_points_2 = pose_graph_pose_2.getPolygon().getPoints();
@@ -173,7 +173,7 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPosesAndReverseTransform) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   auto pose_graph_pose_1 = pose_graph.getPoseGraphPose();
   auto return_points_1 = pose_graph_pose_1.getPolygon().getPoints();
@@ -200,7 +200,7 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPosesAndReverseTransform) {
 
   Pose transformation(Position(0.5, 0.5, 0), Rotation());
 
-  pose_graph.addPose(polygon, transformation);
+  pose_graph.addPose(transformation, polygon);
 
   auto pose_graph_pose_2 = pose_graph.getPoseGraphPose();
   auto return_points_2 = pose_graph_pose_2.getPolygon().getPoints();
@@ -290,7 +290,7 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPosesAndCheckIntersection1) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   auto pose_graph_pose_1 = pose_graph.getPoseGraphPose();
   auto return_points_1 = pose_graph_pose_1.getPolygon().getPoints();
@@ -314,7 +314,7 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPosesAndCheckIntersection1) {
 
   Pose transformation(Position(5.0, 0.0, 0), Rotation());
 
-  pose_graph.addPose(polygon, transformation);
+  pose_graph.addPose(transformation, polygon);
 
   auto pose_graph_pose_2 = pose_graph.getPoseGraphPose();
   auto return_points_2 = pose_graph_pose_2.getPolygon().getPoints();
@@ -373,7 +373,7 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPosesAndCheckIntersection2) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   auto pose_graph_pose_1 = pose_graph.getPoseGraphPose();
   auto return_points_1 = pose_graph_pose_1.getPolygon().getPoints();
@@ -397,7 +397,7 @@ TEST_F(PoseGraphTest, CreateTwoPoseGraphPosesAndCheckIntersection2) {
 
   Pose transformation(Position(5.0, 0.0, 0), Rotation());
 
-  pose_graph.addPose(polygon, transformation);
+  pose_graph.addPose(transformation, polygon);
 
   auto pose_graph_pose_2 = pose_graph.getPoseGraphPose();
   auto return_points_2 = pose_graph_pose_2.getPolygon().getPoints();

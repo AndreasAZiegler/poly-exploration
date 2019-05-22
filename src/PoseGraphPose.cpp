@@ -1,12 +1,12 @@
 /* Pose graph pose representation
  */
 
-#include "PoseGraphPose.h"
+#include "poly_exploration/PoseGraphPose.h"
 #include <memory>
 #include <utility>
 
-PoseGraphPose::PoseGraphPose(const Polygon& polygon,
-                             unsigned int pose_graph_pose_id)
+PoseGraphPose::PoseGraphPose(unsigned int pose_graph_pose_id,
+                             const Polygon& polygon)
     : id_(pose_graph_pose_id),
       polygon_(polygon) {
 } /* -----  end of method PoseGraphPose::PoseGraphPose  (constructor)  ----- */
@@ -16,22 +16,22 @@ void PoseGraphPose::addAdjacentPose(unsigned int pose_graph_pose_id,
   adjacentPoses_[pose_graph_pose_id] = transformation;
 }
 
-Polygon PoseGraphPose::getPolygon() const { return polygon_; }
+const Polygon& PoseGraphPose::getPolygon() const { return polygon_; }
 
 void PoseGraphPose::setPolygonPointsToPerformUnion() {
   polygon_.setPointTypesToPerformUnion();
 }
 
-void PoseGraphPose::setPolygonPointType(unsigned int polygon_point_id, PointType point_type) {
+void PoseGraphPose::setPolygonPointType(unsigned int polygon_point_id,
+                                        PointType point_type) {
   polygon_.setPointType(polygon_point_id, point_type);
 }
-
 
 void PoseGraphPose::determinePolygonEdgeTypes() {
   polygon_.determinePolygonEdgeTypes();
 }
 
-std::map<unsigned int, Pose> PoseGraphPose::getAdjacentPoses() const {
+const std::map<unsigned int, Pose>& PoseGraphPose::getAdjacentPoses() const {
   return adjacentPoses_;
 }
 

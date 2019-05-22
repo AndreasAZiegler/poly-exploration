@@ -3,8 +3,8 @@
 
 #include <set>
 #include <vector>
-#include "PolygonConsolidation.h"
 #include "gtest/gtest.h"
+#include "poly_exploration/PolygonConsolidation.h"
 
 // The fixture for testing class Polygon.
 class PolygonConsolidationTest : public ::testing::Test {
@@ -30,11 +30,11 @@ TEST_F(PolygonConsolidationTest, GetAdjacentCandidates1) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   Pose transformation(Position(5.0, 0.0, 0), Rotation());
 
-  pose_graph.addPose(polygon, transformation);
+  pose_graph.addPose(transformation, polygon);
 
   Pose identity_transformation;
   std::set<unsigned int> checked_candidates_id;
@@ -96,17 +96,17 @@ TEST_F(PolygonConsolidationTest, GetAdjacentCandidates2) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   kindr::AngleAxisD angleAxis1(0.7853 /*45deg*/, Eigen::Vector3d::UnitZ());
   Pose transformation1(Position(5.0, 0.0, 0), Rotation(angleAxis1));
 
-  pose_graph.addPose(polygon, transformation1);
+  pose_graph.addPose(transformation1, polygon);
 
   kindr::AngleAxisD angleAxis2(-0.7853 /*45deg*/, Eigen::Vector3d::UnitZ());
   Pose transformation2(Position(5.0, 0.0, 0), Rotation(angleAxis2));
 
-  pose_graph.addPose(polygon, transformation2);
+  pose_graph.addPose(transformation2, polygon);
 
   auto pose_graph_poses = pose_graph.getPoseGraphPoses();
 
@@ -224,11 +224,11 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners1) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   Pose transformation(Position(5.0, 0.0, 0), Rotation());
 
-  pose_graph.addPose(polygon, transformation);
+  pose_graph.addPose(transformation, polygon);
 
   unsigned int result_id = 0;
   Pose expected_transformation = Pose(Position(-5.0, 0.0, 0), Rotation());
@@ -272,17 +272,17 @@ TEST_F(PolygonConsolidationTest, GetIntersectedPolygonOwners2) {
 
   Polygon polygon(points);
 
-  pose_graph.addPose(polygon, Pose());
+  pose_graph.addPose(Pose(), polygon);
 
   kindr::AngleAxisD angleAxis1(0 /*0.7853 45deg*/, Eigen::Vector3d::UnitZ());
   Pose transformation1(Position(5.0, 5.0, 0), Rotation(angleAxis1));
 
-  pose_graph.addPose(polygon, transformation1);
+  pose_graph.addPose(transformation1, polygon);
 
   kindr::AngleAxisD angleAxis2(0 /*-0.7853 -45deg*/, Eigen::Vector3d::UnitZ());
   Pose transformation2(Position(5.0, -5.0, 0), Rotation(angleAxis2));
 
-  pose_graph.addPose(polygon, transformation2);
+  pose_graph.addPose(transformation2, polygon);
 
   std::vector<PoseGraphPose> pose_graph_poses = pose_graph.getPoseGraphPoses();
 
@@ -415,7 +415,7 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion1) {
 
   Polygon polygon1(points1);
 
-  pose_graph.addPose(polygon1, Pose());
+  pose_graph.addPose(Pose(), polygon1);
 
   kindr::AngleAxisD angleAxis2(1.5708 /*90deg*/, Eigen::Vector3d::UnitZ());
   Pose transformation(Position(5.0, 5.0, 0), Rotation(angleAxis2));
@@ -430,7 +430,7 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion1) {
 
   Polygon polygon2(points2);
 
-  pose_graph.addPose(polygon2, transformation);
+  pose_graph.addPose(transformation, polygon2);
 
   unsigned int reference_id = 0;
   auto intersected_polygon_owners =
@@ -439,7 +439,7 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion1) {
   auto[polygon_union, intersected_polygon_owners_vector] =
       PolygonConsolidation::getPolygonUnion(reference_id,
                                             pose_graph.getPoseGraphPoses(),
-                                            intersected_polygon_owners);
+                                            &intersected_polygon_owners);
 
   auto expected_transformation = transformation;
   EXPECT_EQ(std::get<0>(intersected_polygon_owners_vector[0]), 1);
@@ -466,7 +466,7 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion1) {
   std::tie(polygon_union, intersected_polygon_owners_vector) =
       PolygonConsolidation::getPolygonUnion(reference_id,
                                             pose_graph.getPoseGraphPoses(),
-                                            intersected_polygon_owners);
+                                            &intersected_polygon_owners);
 
   auto inverse_rotation = transformation.getRotation().inverted();
   expected_transformation = Pose(
@@ -557,8 +557,8 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion2) {
 
   Polygon polygon1(points1);
 
-  pose_graph.addPose(polygon1, Pose());
-  pose_graph.addPose(polygon1, Pose());
+  pose_graph.addPose(Pose(), polygon1);
+  pose_graph.addPose(Pose(), polygon1);
 
   unsigned int reference_id = 0;
   auto intersected_polygon_owners =
@@ -567,7 +567,7 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion2) {
   auto[polygon_union, intersected_polygon_owners_vector] =
       PolygonConsolidation::getPolygonUnion(reference_id,
                                             pose_graph.getPoseGraphPoses(),
-                                            intersected_polygon_owners);
+                                            &intersected_polygon_owners);
 
   auto expected_transformation = Pose();
   EXPECT_EQ(std::get<0>(intersected_polygon_owners_vector[0]), 1);
@@ -590,7 +590,7 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion2) {
   std::tie(polygon_union, intersected_polygon_owners_vector) =
       PolygonConsolidation::getPolygonUnion(reference_id,
                                             pose_graph.getPoseGraphPoses(),
-                                            intersected_polygon_owners);
+                                            &intersected_polygon_owners);
 
   EXPECT_EQ(std::get<0>(intersected_polygon_owners_vector[0]), 0);
   EXPECT_EQ(std::get<1>(intersected_polygon_owners_vector[0]),

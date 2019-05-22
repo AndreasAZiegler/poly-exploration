@@ -17,7 +17,8 @@ class PoseGraph {
  public:
   PoseGraph();
 
-  void addPose(const Polygon& polygon, Pose transformation);
+  void addPose(const Pose& current_pose_to_previews_pose_transformation,
+               const Polygon& polygon);
 
   void connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
                        Pose transformation);
@@ -34,9 +35,5 @@ class PoseGraph {
   unsigned int currentPoseGraphPoseId_;
 
   std::vector<PoseGraphPose> poseGraphPoses_;
-
- public:
-  //FRIEND_TEST(PoseGraphTest, ConsolidatePolygon);
-  //FRIEND_TEST(PoseGraphTest, GetIntersectedPolygonOwners1);
 }; /* -----  end of class PoseGraph  ----- */
 

@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <kindr/Core>
+#include "kindr/Core"
 
 using Pose = kindr::HomTransformQuatD;
 using Position = kindr::Position3D;

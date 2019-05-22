@@ -13,12 +13,12 @@
 
 class PoseGraphPose {
  public:
-  PoseGraphPose(const Polygon& polygon, unsigned int pose_graph_pose_id);
+  PoseGraphPose(unsigned int pose_graph_pose_id, const Polygon& polygon);
 
   void addAdjacentPose(unsigned int pose_graph_pose_id,
                        const Pose& transformation);
 
-  Polygon getPolygon() const;
+  const Polygon& getPolygon() const;
 
   void setPolygonPointsToPerformUnion();
 
@@ -26,7 +26,7 @@ class PoseGraphPose {
 
   void determinePolygonEdgeTypes();
 
-  std::map<unsigned int, Pose> getAdjacentPoses() const;
+  const std::map<unsigned int, Pose>& getAdjacentPoses() const;
 
   std::vector<unsigned int> getAdjacentPosesId() const;
 

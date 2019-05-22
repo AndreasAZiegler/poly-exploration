@@ -1,47 +1,54 @@
 /* Pose graph representation
  */
 
-#include "PoseGraph.h"
+#include "poly_exploration/PoseGraph.h"
 #include <glog/logging.h>
 #include <memory>
 #include <utility>
 #include <vector>
-#include "PolygonConsolidation.h"
+#include "poly_exploration/PolygonConsolidation.h"
 
 PoseGraph::PoseGraph() : currentPoseGraphPoseId_{0} {}
 
-void PoseGraph::addPose(const Polygon& polygon, const Pose transformation) {
-  PoseGraphPose pose_graph_pose(polygon, currentPoseGraphPoseId_);
+void PoseGraph::addPose(
+    const Pose& current_pose_to_previews_pose_transformation,
+    const Polygon& polygon) {
+  PoseGraphPose pose_graph_pose(currentPoseGraphPoseId_, polygon);
 
   poseGraphPoses_.emplace_back(pose_graph_pose);
 
-  /*
-  std::cout << "currentPoseGraphPoseId_: " << currentPoseGraphPoseId_
-            << std::endl;
-  */
-
   if (currentPoseGraphPoseId_ > 0) {
-    auto inverse_rotation = transformation.getRotation().inverted();
+    auto inverse_rotation =
+        current_pose_to_previews_pose_transformation.getRotation().inverted();
+    if (inverse_rotation.norm() > 1.0) {
+      LOG(INFO) << "norm(inverse_rotation): " << inverse_rotation.norm();
+    }
     Pose inverted_transformation(
-        -inverse_rotation.rotate(transformation.getPosition()),
+        -inverse_rotation.rotate(
+            current_pose_to_previews_pose_transformation.getPosition()),
         inverse_rotation);
 
     poseGraphPoses_[currentPoseGraphPoseId_ - 1].addAdjacentPose(
-        currentPoseGraphPoseId_, transformation);
+        currentPoseGraphPoseId_, current_pose_to_previews_pose_transformation);
 
+    auto adjacent_transformations =
+        poseGraphPoses_[currentPoseGraphPoseId_ - 1].getAdjacentPoses();
     LOG(INFO) << "Transformation between pose graph pose ("
               << currentPoseGraphPoseId_ - 1
               << ") and adjacent pose graph pose (" << currentPoseGraphPoseId_
               << "):" << std::endl
-              << transformation;
+              << current_pose_to_previews_pose_transformation << std::endl
+              << adjacent_transformations[currentPoseGraphPoseId_];
 
     poseGraphPoses_.back().addAdjacentPose(currentPoseGraphPoseId_ - 1,
                                            inverted_transformation);
 
+    adjacent_transformations = poseGraphPoses_.back().getAdjacentPoses();
     LOG(INFO) << "Transformation between pose graph pose ("
               << currentPoseGraphPoseId_ << ") and adjacent pose graph pose ("
               << currentPoseGraphPoseId_ - 1 << "):" << std::endl
-              << inverted_transformation;
+              << inverted_transformation << std::endl
+              << adjacent_transformations[currentPoseGraphPoseId_ - 1];
 
     consolidatePolygon(currentPoseGraphPoseId_);
   }
@@ -56,7 +63,7 @@ void PoseGraph::consolidatePolygon(const unsigned int pose_graph_pose_id) {
                                                         poseGraphPoses_);
   auto[polygon_union, intersected_polygon_owners_vector] =
       PolygonConsolidation::getPolygonUnion(pose_graph_pose_id, poseGraphPoses_,
-                                            intersected_polygon_owners);
+                                            &intersected_polygon_owners);
 
   // Add current pose (pose_graph_pose_id) to the intersected polygon
   // owners as we also want to consolidate the polygon points of the
@@ -76,7 +83,7 @@ void PoseGraph::consolidatePolygon(const unsigned int pose_graph_pose_id) {
   // Set points which are not MAX_RANGE or OBSTACLE to FREE_SPACE. These
   // are points which were not in the unifyed polygon and therefore must
   // represent polygon point in free space
-  PolygonConsolidation::setFreeSpacePoints(&poseGraphPoses_, polygon_union,
+  PolygonConsolidation::setFreeSpacePoints(&poseGraphPoses_,
                                            intersected_polygon_owners_vector);
 
   // Determine and set edge types of the intersected polygons
@@ -90,6 +97,9 @@ void PoseGraph::consolidatePolygon(const unsigned int pose_graph_pose_id) {
 void PoseGraph::connectTwoPoses(unsigned int pose_id_1, unsigned int pose_id_2,
                                 const Pose transformation) {
   auto inverse_rotation = transformation.getRotation().inverted();
+  if (inverse_rotation.norm() > 1.0) {
+    LOG(INFO) << "norm(inverse_rotation): " << inverse_rotation.norm();
+  }
   Pose inverted_transformation(
       -inverse_rotation.rotate(transformation.getPosition()), inverse_rotation);
 

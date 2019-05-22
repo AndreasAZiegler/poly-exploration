@@ -1,4 +1,4 @@
-#include "Point.h"
+#include "poly_exploration/Point.h"
 #include "gtest/gtest.h"
 
 namespace {
