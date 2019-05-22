@@ -14,21 +14,21 @@ std::tuple<Polygon, std::vector<std::tuple<unsigned int, Pose>>>
 PolygonConsolidation::getPolygonUnion(
     const unsigned int pose_graph_pose_id,
     const std::vector<PoseGraphPose>& pose_graph_poses,
-    std::queue<std::tuple<unsigned int, Pose>> intersected_polygon_owners) {
+    std::queue<std::tuple<unsigned int, Pose>>* intersected_polygon_owners) {
   CHECK(pose_graph_poses.size() > pose_graph_pose_id)
       << "Id has to be within range!";
 
   std::vector<std::tuple<unsigned int, Pose>> intersected_polygon_owners_vector;
 
   LOG(INFO) << "Reference id (" << pose_graph_pose_id << ") has "
-            << intersected_polygon_owners.size() << " intersecting polygons.";
+            << intersected_polygon_owners->size() << " intersecting polygons.";
 
   auto polygon_union = pose_graph_poses[pose_graph_pose_id].getPolygon();
   LOG(INFO) << "Reference polygon:" << std::endl << polygon_union;
   polygon_union.plot("plot-start.svg");
 
-  while (!intersected_polygon_owners.empty()) {
-    auto intersected_polygon_owner = intersected_polygon_owners.front();
+  while (!intersected_polygon_owners->empty()) {
+    auto intersected_polygon_owner = intersected_polygon_owners->front();
     intersected_polygon_owners_vector.emplace_back(intersected_polygon_owner);
 
     auto candidate_id = std::get<0>(intersected_polygon_owner);
@@ -59,7 +59,7 @@ PolygonConsolidation::getPolygonUnion(
     LOG(INFO) << "Number of points AFTER union: "
               << polygon_union.getPoints().size();
 
-    intersected_polygon_owners.pop();
+    intersected_polygon_owners->pop();
   }
   polygon_union.plot("plot-end.svg");
 
@@ -255,7 +255,7 @@ void PolygonConsolidation::setMaxRangeAndObstaclePoints(
 }
 
 void PolygonConsolidation::setFreeSpacePoints(
-    std::vector<PoseGraphPose>* pose_graph_poses, const Polygon& polygon_union,
+    std::vector<PoseGraphPose>* pose_graph_poses,
     std::vector<std::tuple<unsigned int, Pose>>& intersected_polygon_owners) {
   for (const auto& intersected_polygon_owner : intersected_polygon_owners) {
     auto intersected_polygon_pose_id = std::get<0>(intersected_polygon_owner);

@@ -16,7 +16,7 @@ class PolygonConsolidation {
   getPolygonUnion(
       const unsigned int pose_graph_pose_id,
       const std::vector<PoseGraphPose>& pose_graph_poses,
-      std::queue<std::tuple<unsigned int, Pose>> intersected_polygon_owners);
+      std::queue<std::tuple<unsigned int, Pose>>* intersected_polygon_owners);
 
   static std::queue<std::tuple<unsigned int, Pose>> getIntersectedPolygonOwners(
       const unsigned int pose_graph_pose_id,
@@ -39,7 +39,6 @@ class PolygonConsolidation {
 
   static void setFreeSpacePoints(
       std::vector<PoseGraphPose>* pose_graph_poses,
-      const Polygon& polygon_union,
       std::vector<std::tuple<unsigned int, Pose>>& intersected_polygon_owners);
 }; /* -----  end of class PolygonConsolidation  ----- */
 

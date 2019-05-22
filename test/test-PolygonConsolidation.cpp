@@ -3,8 +3,8 @@
 
 #include <set>
 #include <vector>
-#include "poly_exploration/PolygonConsolidation.h"
 #include "gtest/gtest.h"
+#include "poly_exploration/PolygonConsolidation.h"
 
 // The fixture for testing class Polygon.
 class PolygonConsolidationTest : public ::testing::Test {
@@ -439,7 +439,7 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion1) {
   auto[polygon_union, intersected_polygon_owners_vector] =
       PolygonConsolidation::getPolygonUnion(reference_id,
                                             pose_graph.getPoseGraphPoses(),
-                                            intersected_polygon_owners);
+                                            &intersected_polygon_owners);
 
   auto expected_transformation = transformation;
   EXPECT_EQ(std::get<0>(intersected_polygon_owners_vector[0]), 1);
@@ -466,7 +466,7 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion1) {
   std::tie(polygon_union, intersected_polygon_owners_vector) =
       PolygonConsolidation::getPolygonUnion(reference_id,
                                             pose_graph.getPoseGraphPoses(),
-                                            intersected_polygon_owners);
+                                            &intersected_polygon_owners);
 
   auto inverse_rotation = transformation.getRotation().inverted();
   expected_transformation = Pose(
@@ -567,7 +567,7 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion2) {
   auto[polygon_union, intersected_polygon_owners_vector] =
       PolygonConsolidation::getPolygonUnion(reference_id,
                                             pose_graph.getPoseGraphPoses(),
-                                            intersected_polygon_owners);
+                                            &intersected_polygon_owners);
 
   auto expected_transformation = Pose();
   EXPECT_EQ(std::get<0>(intersected_polygon_owners_vector[0]), 1);
@@ -590,7 +590,7 @@ TEST_F(PolygonConsolidationTest, GetPolygonUnion2) {
   std::tie(polygon_union, intersected_polygon_owners_vector) =
       PolygonConsolidation::getPolygonUnion(reference_id,
                                             pose_graph.getPoseGraphPoses(),
-                                            intersected_polygon_owners);
+                                            &intersected_polygon_owners);
 
   EXPECT_EQ(std::get<0>(intersected_polygon_owners_vector[0]), 0);
   EXPECT_EQ(std::get<1>(intersected_polygon_owners_vector[0]),

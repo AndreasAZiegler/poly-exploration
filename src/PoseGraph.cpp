@@ -63,7 +63,7 @@ void PoseGraph::consolidatePolygon(const unsigned int pose_graph_pose_id) {
                                                         poseGraphPoses_);
   auto[polygon_union, intersected_polygon_owners_vector] =
       PolygonConsolidation::getPolygonUnion(pose_graph_pose_id, poseGraphPoses_,
-                                            intersected_polygon_owners);
+                                            &intersected_polygon_owners);
 
   // Add current pose (pose_graph_pose_id) to the intersected polygon
   // owners as we also want to consolidate the polygon points of the
@@ -83,7 +83,7 @@ void PoseGraph::consolidatePolygon(const unsigned int pose_graph_pose_id) {
   // Set points which are not MAX_RANGE or OBSTACLE to FREE_SPACE. These
   // are points which were not in the unifyed polygon and therefore must
   // represent polygon point in free space
-  PolygonConsolidation::setFreeSpacePoints(&poseGraphPoses_, polygon_union,
+  PolygonConsolidation::setFreeSpacePoints(&poseGraphPoses_,
                                            intersected_polygon_owners_vector);
 
   // Determine and set edge types of the intersected polygons
