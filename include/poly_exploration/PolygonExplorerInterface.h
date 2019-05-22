@@ -15,6 +15,6 @@ struct TimeStamp {
 
 class PolygonExplorerInterface {
  public:
-  virtual void updateVisualizationCallback(const PoseGraph pose_graph,
-                                           const TimeStamp time_stamp) = 0;
+  virtual void updateVisualizationCallback(PoseGraph pose_graph,
+                                           TimeStamp time_stamp) = 0;
 };
