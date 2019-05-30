@@ -95,8 +95,12 @@ Polygon Polygon::buildUnion(const Polygon& polygon) const {
     throw std::runtime_error("Union results in more than one polygon.");
   }
 
+  // Correct output polygon in case something is messed up
+  boost::geometry::correct(output_polygons[0]);
+
   // Reference to the output polygon
   const auto& output_polygon = output_polygons[0];
+
   return getPolygonFromBoostPolygon(output_polygon);
 }
 
