@@ -14,7 +14,7 @@ LIST(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-modules")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_BUILD_TYPE Debug)
-add_compile_options(-g -ggdb3 -Wall -Wall -Wextra -Wpedantic)
+add_compile_options(-g -ggdb3 -Wall -Wall -Wextra -Wpedantic -lprofiler)
 
 
 #find_package(Glog REQUIRED)
